@@ -121,7 +121,7 @@ Cosmic Intruders depends of:
 * [SDL2 - Simple DirectMedia Layer](https://libsdl.org).
 * [SDL2_image](https://www.libsdl.org/projects/SDL_image/).
 * [SDL2_ttf](https://www.libsdl.org/projects/SDL_ttf/).
-* [Cooper](https://github.com/AmazingCow-Game-Frameworks/Cooper) - The engine.
+* [Cooper](https://github.com/AmazingCow-Game-Framework/Cooper) - The engine.
 * [Emscripten](http://kripken.github.io/emscripten-site/) - For the web builds.
 
 
@@ -136,7 +136,7 @@ need to:
 On other platforms please refer to the official [SDL documentation](https://wiki.libsdl.org/Installation).
 
 
-**Cooper**  - We use the [Cooper](https://github.com/AmazingCow-Game-Frameworks/Cooper)[sadf]
+**Cooper**  - We use the [Cooper](https://github.com/AmazingCow-Game-Framework/Cooper)[sadf]
 git repository as as submodule. So all that you need to do is initialize it.
 
 ``` git submodule update --init --recursive ``` on the project root directory.
