@@ -136,7 +136,7 @@ need to:
 On other platforms please refer to the official [SDL documentation](https://wiki.libsdl.org/Installation).
 
 
-**Cooper**  - We use the [Cooper](https://github.com/AmazingCow-Game-Framework/Cooper)[sadf]
+**Cooper**  - We use the [Cooper](https://github.com/AmazingCow-Game-Framework/Cooper)
 git repository as as submodule. So all that you need to do is initialize it.
 
 ``` git submodule update --init --recursive ``` on the project root directory.
