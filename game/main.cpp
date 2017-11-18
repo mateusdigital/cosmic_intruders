@@ -25,6 +25,7 @@
 #include "Game/include/Helpers/SceneHelper.h"
 #include "Game/include/Helpers/Storage.h"
 
+
 //----------------------------------------------------------------------------//
 // Entry Point                                                                //
 //----------------------------------------------------------------------------//
@@ -33,7 +34,7 @@ int main()
     //--------------------------------------------------------------------------
     // Init
     Cooper::Log     ::Init();
-    Cooper::Graphics::Init(800, 730, "Cosmic Intruders - v1.0");
+    Cooper::Graphics::Init(800, 730, CosmicIntruders::GameUtils::kWindowCaption);
     Cooper::RES     ::Init(CosmicIntruders::GameUtils::kBaseAssetsPath);
     Cooper::Input   ::Init();
     Cooper::Sound   ::Init();

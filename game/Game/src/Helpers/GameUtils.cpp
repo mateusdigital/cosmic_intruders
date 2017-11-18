@@ -20,6 +20,9 @@
 
 // Header
 #include "Game/include/Helpers/GameUtils.h"
+// CosmicIntruders
+#include "Game/include/Helpers/Version.h"
+
 
 // Usings
 using namespace CosmicIntruders;
@@ -31,6 +34,14 @@ namespace {
     std::unique_ptr<CoreRandom::Random> m_pCoreRandom;
     Cooper::Graphics*                   m_pGraphicsRef;
 }
+
+
+//----------------------------------------------------------------------------//
+// Enums / Constants / Typedefs                                               //
+//----------------------------------------------------------------------------//
+const int   GameUtils::kDefaultLives   = 3;
+const char* GameUtils::kBaseAssetsPath = "./assets/";
+const char* GameUtils::kWindowCaption  = "Cosmic Intruders - " COSMIC_INTRUDERS_VERSION;
 
 
 //----------------------------------------------------------------------------//
