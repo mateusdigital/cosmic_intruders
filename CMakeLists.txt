@@ -98,6 +98,7 @@ set(SOURCE_FILES
     ./game/Game/include/Scenes/MenuScene.h
     ./game/Game/include/Scenes/SplashScene.h
     ./game/Game/include/Helpers/Storage.h
+    ./game/Game/include/Helpers/Version.h
 
     ./game/Game/src/Gameplay/Cannon/Cannon.cpp
     ./game/Game/src/Gameplay/Enemy/Alien.cpp
