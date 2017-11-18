@@ -1,0 +1,35 @@
+--------------------------------------------------------------------------------
+- Version 1.x.x                                                               --
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+- v1.0.1 - Nov 18, 2017.
+
+[ADD]
+    - Add the docs files.
+
+    - Add the update_version.sh script.
+      Now we can update the version of the game easily. It must be run every
+      new release to keep the source files with the git tags.
+
+    - Add the Version.h.
+      So now the source files can "know" which version the project has.
+
+[CHANGE]
+    - Update the Cooper submodule.
+      It had a bug on TextEntity.
+
+    - main.cpp:
+      Pass the GameUtils::kWindowCaption to the Graphics::Init function,
+      so the window title will be correct everytime.
+
+    - GameUtils.h:
+      Change it from a "class-like" namespace to a struct to make easier
+      to update the kWindowCaption without too much recompilation.
+
+
+--------------------------------------------------------------------------------
+- v1.0.0 - Nov 17, 2017.
+
+CHANGES:
+    - Make the first project release.
