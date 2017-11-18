@@ -26,37 +26,38 @@
 
 namespace CosmicIntruders {
 
-// class-like namespace.
-namespace GameUtils
+struct GameUtils
 {
+    COOPER_DISALLOW_EVERYTHING(GameUtils);
+
     //------------------------------------------------------------------------//
     // Enums / Constants / Typedefs                                           //
     //------------------------------------------------------------------------//
-    constexpr auto kDefaultLives = 3;
-
-    constexpr auto kBaseAssetsPath = "./assets/";
+    static const int   kDefaultLives;
+    static const char* kBaseAssetsPath;
+    static const char* kWindowCaption;
 
 
     //------------------------------------------------------------------------//
     // Init Functions                                                         //
     //------------------------------------------------------------------------//
-    void Init();
+    static void Init();
 
 
     //--------------------------------------------------------------------------
     // Random Number Functions                                                //
     //--------------------------------------------------------------------------
-    int   RandomInt  (int min, int max);
-    float RandomFloat();
-    bool  RandomBool ();
+    static int   RandomInt  (int min, int max);
+    static float RandomFloat();
+    static bool  RandomBool ();
 
 
     //------------------------------------------------------------------------//
     // Font Functions                                                         //
     //------------------------------------------------------------------------//
-    constexpr inline int GameFontSize() { return 24; }
+    static constexpr inline int GameFontSize() { return 24; }
 
-    inline const std::string& GameFontPath()
+    static inline const std::string& GameFontPath()
     {
         static auto path = Cooper::RES::Fullpath("Fonts/space_invaders.ttf");
         return path;
@@ -66,13 +67,13 @@ namespace GameUtils
     //------------------------------------------------------------------------//
     // Atlas Functions                                                        //
     //------------------------------------------------------------------------//
-    inline const std::string& GameAtlasPath()
+    static inline const std::string& GameAtlasPath()
     {
         static auto path = Cooper::RES::Fullpath("Atlases/GameAtlas.ss");
         return path;
     }
 
-    inline const std::string& SplashAtlasPath()
+    static inline const std::string& SplashAtlasPath()
     {
         static auto path = Cooper::RES::Fullpath("Atlases/SplashAtlas.ss");
         return path;
@@ -82,7 +83,7 @@ namespace GameUtils
     //------------------------------------------------------------------------//
     // Sound Functions                                                        //
     //------------------------------------------------------------------------//
-    inline std::string GetSoundsPath(const std::string &name)
+    static inline std::string GetSoundsPath(const std::string &name)
     {
         static auto path = Cooper::RES::Fullpath("Sounds/");
         return path + name;
@@ -92,11 +93,11 @@ namespace GameUtils
     //------------------------------------------------------------------------//
     // Movement Bounds Functions                                              //
     //------------------------------------------------------------------------//
-    const Bounds& MoveBoundsCannon   ();
-    const Bounds& MoveBoundsLaser    ();
-    const Bounds& MoveBoundsFormation();
-    const Bounds& MoveBoundsUFO      ();
+    static const Bounds& MoveBoundsCannon   ();
+    static const Bounds& MoveBoundsLaser    ();
+    static const Bounds& MoveBoundsFormation();
+    static const Bounds& MoveBoundsUFO      ();
 
 
-} // namespace GameUtils
-} // namespace CosmicIntruders
+}; // struct GameUtils
+}  // namespace CosmicIntruders
