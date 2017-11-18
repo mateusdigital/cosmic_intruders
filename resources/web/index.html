@@ -14,6 +14,18 @@
 
     }
 
+    #Div_CanvasContainer {
+        height: 800px;
+        width:  800px;
+        border: 0px none;
+        position:absolute;
+        top   : 10;
+        left  : 0;
+        right : 0;
+        margin: 0 auto;
+        visibility: hidden;
+    }
+
     canvas.emscripten {
         border: 0px none;
         margin-left:auto;
@@ -21,17 +33,27 @@
         display:block
     }
 
-    p#fullScreenButton {
-        text-align: center;
-        background-color: #01fd01;
-        padding: 10px;
-        cursor: default;
-    }
-
     #loadingDiv {
-        text-align: center;
+        text-align : center;
+        color      : white;
     }
 
+    #messageDiv {
+        text-align : center;
+        color      : white;
+    }
+
+    .container{
+        display : flex;
+        width   : 842px;
+    }
+    .fixed{
+        width:  810;
+    }
+    .flex-item{
+        text-align : right;
+        flex-grow  : 1;
+    }
 
 </style>
 </head>
@@ -45,23 +67,62 @@
         Loading, please wait...
     </div>
 
-    <canvas class="emscripten" id="canvas"
-            oncontextmenu="event.preventDefault()">
-    </canvas>
+    <div id="Div_CanvasContainer">
+        <div class="container">
+            <div class="fixed">
+                <!-- ------------------------------------------------------- -->
+                <!-- Emscripten Canvas -->
+                <canvas class="emscripten" id="canvas"
+                    oncontextmenu="event.preventDefault()">
+                </canvas>
+            </div>
 
-    <div style="width:200px; margin-left:auto; margin-right:auto">
-        <p id="fullScreenButton" onclick="Module.requestFullScreen(true, false)">Click for full-screen</p>
+            <!-- ----------------------------------------------------------- -->
+            <!-- Buttons -->
+            <div class="flex-item">
+                <!-- ------------------------------------------------------- -->
+                <!-- Fullscreen button -->
+                <img src="svg/multimedia.svg" width="32px" height="30px"
+                    onclick="Module.requestFullScreen(true, false)">
+                <br>
+                <br>
+
+                <!-- ------------------------------------------------------- -->
+                <!-- Git button -->
+                <img src="svg/git.svg" width="32px" height="32px"
+                    onclick="window.open('https://github.com/AmazingCow-Game/CosmicIntruders', '_blank')">
+                <br>
+
+                <!-- ------------------------------------------------------- -->
+                <!-- itch button -->
+                <img src="svg/itch.svg" width="32px" height="32px"
+                    onclick="window.open('https://amazingcow.itch.io/cosmic', '_blank')">
+                <br>
+            </div>
+        </div>
+
+        <div id="messageDiv">
+            <br>
+            Made with <3 by
+                <u onclick="window.open('http://n2omatt.com', '_blank')">
+                    n2omatt
+                <u>
+        </div>
     </div>
 
 
+    <!-- ------------------------------------------------------------------- -->
+    <!-- Emscripten Initialization                                           -->
+    <!-- ------------------------------------------------------------------- -->
     <script type='text/javascript'>
         var Module = {
             onRuntimeInitialized: function() {
+                document.getElementById('Div_CanvasContainer').style.visibility = "visible";
                 document.getElementById('loadingDiv').style.visibility = "hidden";
             },
             canvas: (function() {
                 var canvas = document.getElementById('canvas');
-                return canvas;
+                    return canvas;
                 })()
         };
     </script>
