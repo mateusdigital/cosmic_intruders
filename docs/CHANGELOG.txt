@@ -2,6 +2,22 @@
 - Version 1.x.x                                                               --
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
+v1.0.2 - Nov 19, 2017.
+
+[CHANGE]
+    - Improve the play page a little. So now it's more pretty!
+      Yep, I know, my html+css skills are pretty limited ;D
+
+    - Update the Cooper.
+      It had a bug on TextureAtlas load, that was not informing that
+      the asset wasn't found.
+
+[REMOVE]
+    - page.css.
+      It isn't needed at all for now. All the css stuff is inline on the
+      index.html page.
+
+--------------------------------------------------------------------------------
 v1.0.1 - Nov 18, 2017.
 
 [ADD]
