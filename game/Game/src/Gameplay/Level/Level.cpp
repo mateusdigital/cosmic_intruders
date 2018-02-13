@@ -12,7 +12,7 @@
 //  Date      : Nov 17, 2017                                                  //
 //  License   : GPLv3                                                         //
 //  Author    : n2omatt <n2omatt@amazingcow.com>                              //
-//  Copyright : AmazingCow - 2017                                             //
+//  Copyright : AmazingCow - 2017, 2018                                       //
 //                                                                            //
 //  Description :                                                             //
 //                                                                            //
@@ -302,7 +302,7 @@ Cooper::Vec2 Level::HandleMoveInput()
 
         auto delta = (mouse_pos.x - cannon_pos.x);
 
-        if(abs(delta) < 5) // Too little input.
+        if(std::abs(delta) < 5) // Too little input.
             return move_vector;
 
         if(delta < 0)
@@ -607,4 +607,3 @@ void Level::PlayerWasHit()
     m_playerWasKilled       = true;
     m_currentAnimationState = AnimationStates::CannonExploding;
 }
-

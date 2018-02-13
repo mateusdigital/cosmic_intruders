@@ -12,7 +12,7 @@
 //  Date      : Nov 17, 2017                                                  //
 //  License   : GPLv3                                                         //
 //  Author    : n2omatt <n2omatt@amazingcow.com>                              //
-//  Copyright : AmazingCow - 2017                                             //
+//  Copyright : AmazingCow - 2017, 2018                                       //
 //                                                                            //
 //  Description :                                                             //
 //                                                                            //
@@ -20,6 +20,8 @@
 
 // Header
 #include "Game/include/GamePlay/Scenery/ISceneryObject.h"
+// std
+#include <cstring>
 // CosmicIntruders
 #include "Game/include/Helpers/GameUtils.h"
 
@@ -184,7 +186,7 @@ void ISceneryObject::ResetPixels()
 {
     //--------------------------------------------------------------------------
     // Reset the all values on the array to m_normalColor.
-    memset(
+    std::memset(
         m_pPixelsArr,
         m_normalColor,
         sizeof(Uint32) * m_localRect.w * m_localRect.h
