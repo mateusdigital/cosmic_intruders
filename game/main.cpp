@@ -12,7 +12,7 @@
 //  Date      : Nov 17, 2017                                                  //
 //  License   : GPLv3                                                         //
 //  Author    : n2omatt <n2omatt@amazingcow.com>                              //
-//  Copyright : AmazingCow - 2017                                             //
+//  Copyright : AmazingCow - 2017, 2018                                       //
 //                                                                            //
 //  Description :                                                             //
 //                                                                            //
@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
     Cooper::Sound   ::Init();
     Cooper::Game    ::Init(60);
 
-    #ifndef COOPER_DEBUG
+    #ifndef COOPER_DEBUG // Release Mode.
         Cooper::Log::SetLogLevel(Cooper::Log::LOG_LEVEL_NONE);
     #endif //COOPER_DEBUG
 
