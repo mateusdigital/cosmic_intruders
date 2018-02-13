@@ -12,7 +12,7 @@
 //  Date      : Nov 17, 2017                                                  //
 //  License   : GPLv3                                                         //
 //  Author    : n2omatt <n2omatt@amazingcow.com>                              //
-//  Copyright : AmazingCow - 2017                                             //
+//  Copyright : AmazingCow - 2017, 2018                                       //
 //                                                                            //
 //  Description :                                                             //
 //                                                                            //
