@@ -19,47 +19,40 @@
 ##---------------------------------------------------------------------------~##
 
 ##----------------------------------------------------------------------------##
+## Imports                                                                    ##
+##----------------------------------------------------------------------------##
+source /usr/local/src/acow_shellscript_utils.sh
+
+
+##----------------------------------------------------------------------------##
 ## Vars                                                                       ##
 ##----------------------------------------------------------------------------##
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)";
+SCRIPT_DIR="$(get_script_dir)";
 
 MODE="debug";
-PLATFORM="gnu";
+PLATFORM="gnu_linux";
 MAKE_ZIP="false";
-
-
-##----------------------------------------------------------------------------##
-## Helper Functions                                                           ##
-##----------------------------------------------------------------------------##
-to_lower()
-{
-    echo $(echo $1 | tr [:upper:] [:lower:]);
-}
-
-fatal()
-{
-    echo "[FATAL] $@";
-    exit 1;
-}
-
+VERSION="";
+PLATFORM_BUILD_SCRIPT="";
 
 ##----------------------------------------------------------------------------##
 ## Functions                                                                  ##
 ##----------------------------------------------------------------------------##
 show_help()
 {
-    echo -e "Usage:                                                          \n\
-    build.sh                                                                 \n\
-      -h | --help                            - Show this info.               \n\
-      -m | --mode     <*debug | release>     - Compile mode.                 \n\
-      -p | --platform <*gnu | web | windows> - Target platform.              \n\
-      -z | --zip                             - Generate the release zip file.\n\
-                                                                             \n\
-    Options marked with * is assumed to be the default if none is given.     \n\
-                                                                             \n\
-    [Windows] builds requires that the VsDevCmd.bat path be correctly set.   \n\
-    [Web] builds requires that emscripten to be correctly set.               \n\
-    "
+    cat << END_TEXT
+Usage:
+    build.sh
+      -h | --help                            - Show this info.
+      -m | --mode     <*debug | release>     - Compile mode.
+      -p | --platform <*gnu | web | windows> - Target platform.
+      -z | --zip                             - Generate the release zip file.
+
+    Options marked with * is assumed to be the default if none is given.
+
+    [Windows] builds requires that the VsDevCmd.bat path be correctly set.
+    [Web] builds requires that emscripten to be correctly set.
+END_TEXT
 
     exit $1
 }
@@ -74,6 +67,7 @@ parse_cmd_line()
             -m | --mode     ) MODE="$1";       ;;
             -p | --platform ) PLATFORM="$1";   ;;
             -z | --zip      ) MAKE_ZIP="true"; ;;
+            -v | --version  ) VERSION="$1"     ;;
         esac
     done;
 }
@@ -92,74 +86,85 @@ validate_options()
 
     ##--------------------------------------------------------------------------
     ## Check if platform is valid.
-    test $PLATFORM == "gnu"     || \
-    test $PLATFORM == "windows" || \
-    test $PLATFORM == "web"     || \
+    PLATFORM_BUILD_SCRIPT="${SCRIPT_DIR}/build/build_${PLATFORM}.sh";
+    test -f "$PLATFORM_BUILD_SCRIPT" ||
         fatal "Invalid platform: ($PLATFORM)";
+
+    ##--------------------------------------------------------------------------
+    ## Check if version number is valid.
+    if [ "$MAKE_ZIP" == "true" ]; then
+        local GREP_RESULT=$(  \
+            echo "$VERSION" | \
+            grep "^[[:digit:]]\.[[:digit:]]\.[[:digit:]]$" \
+        );
+
+        test -z "$GREP_RESULT" && fatal "Version number is invalid: ($VERSION)";
+    fi;
 }
 
 
 ##----------------------------------------------------------------------------##
 ## Script                                                                     ##
 ##----------------------------------------------------------------------------##
+cd "$SCRIPT_DIR";
+
 parse_cmd_line "$@";
 validate_options;
 
-cd $SCRIPT_DIR;
 
 ##------------------------------------------------------------------------------
 ## Log ;D
-echo "-------------------------------------------------------------------------";
+center_text "Cosmic Intruders";
 echo "Build Script directory: ($SCRIPT_DIR)";
 echo "Compile mode          : ($MODE)";
 echo "Target platform       : ($PLATFORM)";
 echo "Generate release zip  : ($MAKE_ZIP)";
 
 ##------------------------------------------------------------------------------
-## GNU/Linux
-if [ "$PLATFORM" == "gnu" ]; then
-    ## Just call the correct build script...
-    ./build/build_gnu_linux.sh $MODE
+## Call the actual build script.
+echo "Calling: $PLATFORM_BUILD_SCRIPT";
+"$PLATFORM_BUILD_SCRIPT"  $MODE;
 
-##------------------------------------------------------------------------------
-## Web
-elif [ "$PLATFORM" == "web" ]; then
-    ## Just call the correct build script...
-    ./build/build_web.sh $MODE
 
-##------------------------------------------------------------------------------
-## Windows.
-elif [ "$PLATFORM" == "windows" ]; then
-    ## We need this awful hack because the cmd.exe refuses to run the script
-    ## if we only pass the relative path. Don't blame me...
-    CURR_WINDOWS_PATH=$(                                                       \
-        powershell.exe -Command \& \{                                          \
-            [io.path]::combine\(                                               \
-                [environment]::CurrentDirectory,                               \
-                \"build/build_windows.bat\"                                    \
-             \)                                                                \
-        \}
-    );
-    CURR_WINDOWS_PATH=$(echo "$CURR_WINDOWS_PATH" | sed s@\\\\@/@g);
-    cmd.exe /C ${CURR_WINDOWS_PATH} ${MODE}
+##----------------------------------------------------------------------------##
+## Make zip                                                                   ##
+##----------------------------------------------------------------------------##
+if [ "$MAKE_ZIP" == "true" ]; then
+    center_text "Make Zip - Version ($VERSION)";
+
+    ##--------------------------------------------------------------------------
+    ## Create the target directory.
+    ZIP_NAME="${PLATFORM}_${MODE}_v${VERSION}";
+    TARGET_PATH="../$ZIP_NAME";
+
+    rm -rf "$TARGET_PATH"; ## Clean
+    mkdir  "$TARGET_PATH"; ## Create new.
+
+    ##--------------------------------------------------------------------------
+    ## Copy the files.
+    test -f "./files_to_zip.sh" || fatal "Missing file: (files_to_zip.sh)";
+
+    FILES_TO_ZIP=$(./files_to_zip.sh "$PLATFORM");
+    for ITEM in $FILES_TO_ZIP; do
+        ##----------------------------------------------------------------------
+        ## Directory - Copy its contents.
+        if [ -d "$ITEM" ]; then
+            echo "Copying ($ITEM) -> ($TARGET_PATH)";
+            cp -R $ITEM $TARGET_PATH;
+        ##----------------------------------------------------------------------
+        ## Regular file - Just copy it.
+        else
+            echo "Copying ($CP_PATH) -> ($TARGET_PATH)";
+            cp  $ITEM $TARGET_PATH;
+        fi;
+    done;
+
+    ##--------------------------------------------------------------------------
+    ## Make the zip.
+    cd "${TARGET_PATH}";            ## Need to make the contents more nicer.
+    zip -rv "${ZIP_NAME}.zip" ".";  ## Zip everything on this folder.
+    mv "${ZIP_NAME}.zip" "../";     ## Put the .zip on the right place.
+    cd - > /dev/null                ## Go back...
 fi;
 
-
-files_to_zip()
-{
-    echo "build/windows/CosmicIntruders.exe                     \
-          assets                                                \
-          lib/Cooper/windows/VS/SDL2_ttf-2.0.14/lib/x86/*.dll   \
-          lib/Cooper/windows/VS/SDL2_image-2.0.2/lib/x86/*.dll  \
-          lib/Cooper/windows/VS/SDL2-2.0.7/lib/x86/*.dll"
-}
-
-##------------------------------------------------------------------------------
-## Make the zip package.
-mkdir -p ../zip
-for ITEM in $(files_to_zip); do
-    RECURSE="";
-    test -d "../$ITEM" && RECURSE="-R";
-
-    cp $RECURSE ../$ITEM ../zip
-done
+center_text "-";
