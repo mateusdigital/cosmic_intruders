@@ -1,7 +1,20 @@
-build
-package
-CosmicIntruders
+##------------------------------------------------------------------------------
+## Files
+lhcrc
 score.txt
+CosmicIntruders
+
+##------------------------------------------------------------------------------
+## Folders
+build/
+.vscode
+!scripts/build ## Do not ignore the build folder on scripts.
+
+## Build Output
+gnu_linux_*
+web_*
+
+
 
 ## JETBRAINS GITIGNORE MARK ##
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
