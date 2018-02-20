@@ -41,7 +41,7 @@ namespace {
 //----------------------------------------------------------------------------//
 const int   GameUtils::kDefaultLives   = 3;
 const char* GameUtils::kBaseAssetsPath = "./assets/";
-const char* GameUtils::kWindowCaption  = "Cosmic Intruders - " COSMIC_INTRUDERS_VERSION;
+const char* GameUtils::kWindowCaption  = "Cosmic Intruders - " COW_COSMIC_INTRUDERS_VERSION;
 
 
 //----------------------------------------------------------------------------//
