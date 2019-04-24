@@ -21,19 +21,20 @@
 ##----------------------------------------------------------------------------##
 ## Imports                                                                    ##
 ##----------------------------------------------------------------------------##
-source /usr/local/src/acow_shellscript_utils.sh
+source /usr/local/src/pixelwizards/shellscript_utils/main.sh
 
 
 ##----------------------------------------------------------------------------##
 ## Vars                                                                       ##
 ##----------------------------------------------------------------------------##
-SCRIPT_DIR="$(get_script_dir)";
+SCRIPT_DIR="$(pw_get_script_dir)";
 
 MODE="debug";
 PLATFORM="gnu_linux";
 MAKE_ZIP="false";
 VERSION="";
 PLATFORM_BUILD_SCRIPT="";
+
 
 ##----------------------------------------------------------------------------##
 ## Functions                                                                  ##
@@ -75,20 +76,20 @@ parse_cmd_line()
 
 validate_options()
 {
-    MODE=$(to_lower $MODE);
-    PLATFORM=$(to_lower $PLATFORM);
+    MODE=$(pw_to_lower $MODE);
+    PLATFORM=$(pw_to_lower $PLATFORM);
 
     ##--------------------------------------------------------------------------
     ## Check if MODE is valid.
     test $MODE == "debug"   || \
     test $MODE == "release" || \
-         fatal "Invalid mode: ($MODE)";
+         pw_log_fatal "Invalid mode: ($MODE)";
 
     ##--------------------------------------------------------------------------
     ## Check if platform is valid.
     PLATFORM_BUILD_SCRIPT="${SCRIPT_DIR}/build/build_${PLATFORM}.sh";
     test -f "$PLATFORM_BUILD_SCRIPT" ||
-        fatal "Invalid platform: ($PLATFORM)";
+        pw_log_fatal "Invalid platform: ($PLATFORM)";
 
     ##--------------------------------------------------------------------------
     ## Check if version number is valid.
@@ -98,7 +99,7 @@ validate_options()
             grep "^[[:digit:]]\.[[:digit:]]\.[[:digit:]]$" \
         );
 
-        test -z "$GREP_RESULT" && fatal "Version number is invalid: ($VERSION)";
+        test -z "$GREP_RESULT" && pw_log_fatal "Version number is invalid: ($VERSION)";
     fi;
 }
 
@@ -114,7 +115,7 @@ validate_options;
 
 ##------------------------------------------------------------------------------
 ## Log ;D
-center_text "Cosmic Intruders";
+echo "Cosmic Intruders";
 echo "Build Script directory: ($SCRIPT_DIR)";
 echo "Compile mode          : ($MODE)";
 echo "Target platform       : ($PLATFORM)";
@@ -130,7 +131,7 @@ echo "Calling: $PLATFORM_BUILD_SCRIPT";
 ## Make zip                                                                   ##
 ##----------------------------------------------------------------------------##
 if [ "$MAKE_ZIP" == "true" ]; then
-    center_text "Make Zip - Version ($VERSION)";
+    echo "Make Zip - Version ($VERSION)";
 
     ##--------------------------------------------------------------------------
     ## Create the target directory.
@@ -142,7 +143,7 @@ if [ "$MAKE_ZIP" == "true" ]; then
 
     ##--------------------------------------------------------------------------
     ## Copy the files.
-    test -f "./files_to_zip.sh" || fatal "Missing file: (files_to_zip.sh)";
+    test -f "./files_to_zip.sh" || pw_log_fatal "Missing file: (files_to_zip.sh)";
 
     FILES_TO_ZIP=$(./files_to_zip.sh "$PLATFORM");
     for ITEM in $FILES_TO_ZIP; do
@@ -167,4 +168,4 @@ if [ "$MAKE_ZIP" == "true" ]; then
     cd - > /dev/null                ## Go back...
 fi;
 
-center_text "-";
+echo "-";

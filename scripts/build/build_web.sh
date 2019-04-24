@@ -22,17 +22,18 @@
 ##----------------------------------------------------------------------------##
 ## Imports                                                                    ##
 ##----------------------------------------------------------------------------##
-source /usr/local/src/acow_shellscript_utils.sh
+source /usr/local/src/pixelwizards/shellscript_utils/main.sh
 
-
+echo "------" $PWD
 ##------------------------------------------------------------------------------
 ## Local vars.
 MODE="$1";
-LIBS_ROOT_DIR="$(realpath ../lib/Cooper)";
-GAME_ROOT_DIR="$(realpath ../game)";
-ASSETS_DIR="$(realpath ../assets)";
+LIBS_ROOT_DIR="./lib/Cooper";
+GAME_ROOT_DIR="./game";
+ASSETS_DIR="./assets";
 
-TARGET_BUILD_DIR="$(realpath ../build/web)";
+TARGET_BUILD_DIR="./build/web";
+
 
 
 ##------------------------------------------------------------------------------
@@ -48,16 +49,16 @@ fi;
 
 ##------------------------------------------------------------------------------
 ## Log
-center_text "Web Build";
+echo "Web Build";
 
 echo "MODE          : ($MODE)";
 echo "GAME_ROOT_DIR : ($GAME_ROOT_DIR)";
 echo "LIBS_ROOT_DIR : ($LIBS_ROOT_DIR)";
 echo "ASSETS_DIR    : ($ASSETS_DIR)";
 
-test -d "$GAME_ROOT_DIR" || fatal "Missing directory: ($GAME_ROOT_DIR)";
-test -d "$LIBS_ROOT_DIR" || fatal "Missing directory: ($LIBS_ROOT_DIR)";
-test -d "$ASSETS_DIR"    || fatal "Missing directory: ($ASSETS_DIR)";
+test -d "$GAME_ROOT_DIR" || pw_log_fatal "Missing directory: ($GAME_ROOT_DIR)";
+test -d "$LIBS_ROOT_DIR" || pw_log_fatal "Missing directory: ($LIBS_ROOT_DIR)";
+test -d "$ASSETS_DIR"    || pw_log_fatal "Missing directory: ($ASSETS_DIR)";
 
 
 ##------------------------------------------------------------------------------
@@ -78,7 +79,7 @@ em++ $CXX_FLAGS                                 \
     -s LEGACY_GL_EMULATION=0                    \
     -s NO_EXIT_RUNTIME=1
 
-center_text "-"
+echo "-"
 
 # package_web()
 # {
