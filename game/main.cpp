@@ -34,7 +34,11 @@ int main(int argc, char *argv[])
     //--------------------------------------------------------------------------
     // Init
     Cooper::Log     ::Init();
-    Cooper::Graphics::Init(800, 730, CosmicIntruders::GameUtils::kWindowCaption);
+    Cooper::Graphics::Init(
+        800 * 0.7, 730 * 0.7,
+        800, 730,
+        CosmicIntruders::GameUtils::kWindowCaption
+    );
     Cooper::RES     ::Init(CosmicIntruders::GameUtils::kBaseAssetsPath);
     Cooper::Input   ::Init();
     Cooper::Sound   ::Init();
