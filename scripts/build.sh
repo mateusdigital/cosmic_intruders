@@ -108,7 +108,7 @@ validate_options()
 
     ##
     ## Check if platform is valid.
-    PLATFORM_BUILD_SCRIPT="${SCRIPT_DIR}/build/build_${PLATFORM}.sh";
+    PLATFORM_BUILD_SCRIPT="${SCRIPT_DIR}/platforms/build_${PLATFORM}.sh";
     test -f "$PLATFORM_BUILD_SCRIPT" ||
         pw_log_fatal "Invalid platform: ($PLATFORM)";
 
