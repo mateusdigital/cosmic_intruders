@@ -1,18 +1,16 @@
 //~---------------------------------------------------------------------------//
-//                     _______  _______  _______  _     _                     //
-//                    |   _   ||       ||       || | _ | |                    //
-//                    |  |_|  ||       ||   _   || || || |                    //
-//                    |       ||       ||  | |  ||       |                    //
-//                    |       ||      _||  |_|  ||       |                    //
-//                    |   _   ||     |_ |       ||   _   |                    //
-//                    |__| |__||_______||_______||__| |__|                    //
-//                             www.amazingcow.com                             //
+//                        _      _                 _   _                      //
+//                    ___| |_ __| |_ __ ___   __ _| |_| |_                    //
+//                   / __| __/ _` | '_ ` _ \ / _` | __| __|                   //
+//                   \__ \ || (_| | | | | | | (_| | |_| |_                    //
+//                   |___/\__\__,_|_| |_| |_|\__,_|\__|\__|                   //
+//                                                                            //
 //  File      : CannonLaser.cpp                                               //
 //  Project   : Cosmic Intruders                                              //
 //  Date      : Nov 17, 2017                                                  //
 //  License   : GPLv3                                                         //
-//  Author    : n2omatt <n2omatt@amazingcow.com>                              //
-//  Copyright : AmazingCow - 2017                                             //
+//  Author    : stdmatt <stdmatt@pixelwizards.io>                             //
+//  Copyright : stdmatt - 2017 - 2019                                         //
 //                                                                            //
 //  Description :                                                             //
 //                                                                            //
@@ -107,4 +105,3 @@ void CannonLaser::Init()
     m_pTexture->Parent(this);
     Size(m_pTexture->Size());
 }
-
