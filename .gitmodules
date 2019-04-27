@@ -1,6 +1,0 @@
-[submodule "Cooper/lib/CoreRandom"]
-	path = Cooper/lib/CoreRandom
-	url = https://github.com/AmazingCow-Libs/CoreRandom.git
-[submodule "lib/Cooper"]
-	path = lib/Cooper
-	url = https://github.com/AmazingCow-Game-Framework/Cooper
