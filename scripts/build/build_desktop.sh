@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+
 ##~---------------------------------------------------------------------------##
 ##                     _______  _______  _______  _     _                     ##
 ##                    |   _   ||       ||       || | _ | |                    ##
@@ -8,12 +8,12 @@
 ##                    |   _   ||     |_ |       ||   _   |                    ##
 ##                    |__| |__||_______||_______||__| |__|                    ##
 ##                             www.amazingcow.com                             ##
-##  File      : clean.sh                                                      ##
-##  Project   : CosmicIntruders                                               ##
-##  Date      : Feb 19, 2018                                                  ##
+##  File      : build_desktop.sh                                              ##
+##  Project   : Cosmic Intruders                                              ##
+##  Date      : Feb 12, 2018                                                  ##
 ##  License   : GPLv3                                                         ##
 ##  Author    : n2omatt <n2omatt@amazingcow.com>                              ##
-##  Copyright : AmazingCow - 2018                                             ##
+##  Copyright : AmazingCow - 2017                                             ##
 ##                                                                            ##
 ##  Description :                                                             ##
 ##                                                                            ##
@@ -22,14 +22,31 @@
 ##----------------------------------------------------------------------------##
 ## Imports                                                                    ##
 ##----------------------------------------------------------------------------##
-source /usr/local/src/acow_shellscript_utils.sh
-cd $(get_script_dir);
+source /usr/local/src/pixelwizards/shellscript_utils/main.sh
 
-echo "Cleanning everything...";
-rm -vrf ../build;
 
-rm -vrf ../web_release_*;
-rm -vrf ../gnu_linux_release_*;
+##----------------------------------------------------------------------------##
+## Vars                                                                       ##
+##----------------------------------------------------------------------------##
+OS_NAME=$(pw_os_get_simple_name);
 
-rm -vrf ../web_debug_*;
-rm -vrf ../gnu_linux_debug_*;
+MODE="$1";
+BUILD_DIR="$(pw_realpath $2/$OS_NAME)";
+CMAKE_ROOT="$(pw_realpath $3)";
+
+
+##----------------------------------------------------------------------------##
+## Script                                                                     ##
+##----------------------------------------------------------------------------##
+echo "Desktop Build";
+
+##
+## Go to the build directory, this eases the cmake operations...
+mkdir -p "$BUILD_DIR";
+cd "$BUILD_DIR";
+
+cmake "$CMAKE_ROOT" -DCMAKE_BUILD_TYPE=$MODE
+cmake --build .
+
+cd - > /dev/null
+echo "$(pw_FG Done...)";

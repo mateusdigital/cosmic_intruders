@@ -22,52 +22,57 @@
 ##----------------------------------------------------------------------------##
 ## Imports                                                                    ##
 ##----------------------------------------------------------------------------##
-source /usr/local/src/acow_shellscript_utils.sh
+source /usr/local/src/pixelwizards/shellscript_utils/main.sh
 
 
-##------------------------------------------------------------------------------
-## Local vars.
+##----------------------------------------------------------------------------##
+## Vars                                                                       ##
+##----------------------------------------------------------------------------##
 MODE="$1";
-LIBS_ROOT_DIR="$(realpath ../lib/Cooper)";
-GAME_ROOT_DIR="$(realpath ../game)";
-ASSETS_DIR="$(realpath ../assets)";
+BUILD_DIR=$(pw_realpath "$2/web");
+PROJECT_ROOT=$(pw_realpath "$3");
 
-TARGET_BUILD_DIR="$(realpath ../build/web)";
+LIBS_ROOT_DIR="./lib/Cooper";
+GAME_ROOT_DIR="./game";
+ASSETS_DIR="./assets";
 
 
-##------------------------------------------------------------------------------
+##----------------------------------------------------------------------------##
+## Script                                                                     ##
+##----------------------------------------------------------------------------##
+##
 ## Create build dir.
-mkdir -p "$TARGET_BUILD_DIR";
+mkdir -p "$BUILD_DIR";
 
-##------------------------------------------------------------------------------
+##
 ## Decide the flags that we gonna pass to em++
 CXX_FLAGS="-O3 -DNDEBUG";
 if [ "$MODE" == "debug" ]; then
     CXX_FLAGS="-g -DCOOPER_DEBUG";
 fi;
 
-##------------------------------------------------------------------------------
+##
 ## Log
-center_text "Web Build";
+echo "Web Build";
 
-echo "MODE          : ($MODE)";
-echo "GAME_ROOT_DIR : ($GAME_ROOT_DIR)";
-echo "LIBS_ROOT_DIR : ($LIBS_ROOT_DIR)";
-echo "ASSETS_DIR    : ($ASSETS_DIR)";
+echo "MODE          : $(pw_FC $MODE)";
+echo "GAME_ROOT_DIR : $(pw_FC $GAME_ROOT_DIR)";
+echo "LIBS_ROOT_DIR : $(pw_FC $LIBS_ROOT_DIR)";
+echo "ASSETS_DIR    : $(pw_FC $ASSETS_DIR)";
 
-test -d "$GAME_ROOT_DIR" || fatal "Missing directory: ($GAME_ROOT_DIR)";
-test -d "$LIBS_ROOT_DIR" || fatal "Missing directory: ($LIBS_ROOT_DIR)";
-test -d "$ASSETS_DIR"    || fatal "Missing directory: ($ASSETS_DIR)";
+test -d "$GAME_ROOT_DIR" || pw_log_fatal "Missing directory: ($GAME_ROOT_DIR)";
+test -d "$LIBS_ROOT_DIR" || pw_log_fatal "Missing directory: ($LIBS_ROOT_DIR)";
+test -d "$ASSETS_DIR"    || pw_log_fatal "Missing directory: ($ASSETS_DIR)";
 
 
-##------------------------------------------------------------------------------
+##
 ## Run the em++.
 em++ $CXX_FLAGS                                 \
     -std=c++14                                  \
     -I"$LIBS_ROOT_DIR"                          \
     -I"$LIBS_ROOT_DIR"/Cooper                   \
     -I"$GAME_ROOT_DIR"                          \
-    -o "$TARGET_BUILD_DIR"/CosmicIntruders.html \
+    -o "$BUILD_DIR"/CosmicIntruders.html \
     $(find "$LIBS_ROOT_DIR" -iname "*.cpp")     \
     $(find "$GAME_ROOT_DIR" -iname "*.cpp")     \
     --embed-file "$ASSETS_DIR"                  \
@@ -78,7 +83,7 @@ em++ $CXX_FLAGS                                 \
     -s LEGACY_GL_EMULATION=0                    \
     -s NO_EXIT_RUNTIME=1
 
-center_text "-"
+echo $(pw_FG "Done...");
 
 # package_web()
 # {
@@ -87,7 +92,7 @@ center_text "-"
 #     local MODE="$1";
 #     local TARGET="web";
 #     local TARGET_PKG_DIR="$PKG_WEB_DIR";
-#     local TARGET_BUILD_DIR="$BUILD_WEB_DIR"
+#     local BUILD_DIR="$BUILD_WEB_DIR"
 #     local TARGET_RESOURCES_DIR="$RESOURCES_DIR/$TARGET"
 
 #     ##--------------------------------------------------------------------------
@@ -104,12 +109,12 @@ center_text "-"
 #     ##--------------------------------------------------------------------------
 #     ## Copy the files.
 #     echo "--> Copying files...";
-#     cp $TARGET_BUILD_DIR/CosmicIntruders.js   $TARGET_PKG_DIR/temp;
-#     cp $TARGET_BUILD_DIR/CosmicIntruders.html $TARGET_PKG_DIR/temp;
+#     cp $BUILD_DIR/CosmicIntruders.js   $TARGET_PKG_DIR/temp;
+#     cp $BUILD_DIR/CosmicIntruders.html $TARGET_PKG_DIR/temp;
 
 #     ## Memory file is generated only in -O >2 builds...
-#     if [ -e $TARGET_BUILD_DIR/CosmicIntruders.html.mem ]; then
-#          cp $TARGET_BUILD_DIR/CosmicIntruders.html.mem $TARGET_PKG_DIR/temp;
+#     if [ -e $BUILD_DIR/CosmicIntruders.html.mem ]; then
+#          cp $BUILD_DIR/CosmicIntruders.html.mem $TARGET_PKG_DIR/temp;
 #     fi;
 
 #     cp -R $TARGET_RESOURCES_DIR/* $TARGET_PKG_DIR/temp;
