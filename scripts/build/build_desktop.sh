@@ -26,18 +26,27 @@ source /usr/local/src/pixelwizards/shellscript_utils/main.sh
 
 
 ##----------------------------------------------------------------------------##
+## Vars                                                                       ##
+##----------------------------------------------------------------------------##
+OS_NAME=$(pw_os_get_simple_name);
+
+MODE="$1";
+BUILD_DIR="$(pw_realpath $2/$OS_NAME)";
+CMAKE_ROOT="$(pw_realpath $3)";
+
+
+##----------------------------------------------------------------------------##
 ## Script                                                                     ##
 ##----------------------------------------------------------------------------##
 echo "Desktop Build";
 
-mkdir -p ../build/gnu_linux
-cd ../build/gnu_linux
+##
+## Go to the build directory, this eases the cmake operations...
+mkdir -p "$BUILD_DIR";
+cd "$BUILD_DIR";
 
-MODE="Release";
-test "$1" == "debug" && MODE="Debug";
-
-cmake ../../ -DCMAKE_BUILD_TYPE=$MODE
+cmake "$CMAKE_ROOT" -DCMAKE_BUILD_TYPE=$MODE
 cmake --build .
 
 cd - > /dev/null
-echo "-";
+echo "$(pw_FG Done...)";

@@ -28,6 +28,7 @@ source /usr/local/src/pixelwizards/shellscript_utils/main.sh
 ## Vars                                                                       ##
 ##----------------------------------------------------------------------------##
 SCRIPT_DIR="$(pw_get_script_dir)";
+PROJECT_ROOT=$(pw_realpath "$SCRIPT_DIR/..");
 BUILD_DIR=$(pw_realpath "$SCRIPT_DIR/../build");
 RELEASES_DIR=$(pw_realpath "$SCRIPT_DIR/../releases");
 
@@ -128,7 +129,7 @@ validate_options()
 ##----------------------------------------------------------------------------##
 ## Script                                                                     ##
 ##----------------------------------------------------------------------------##
-cd "$SCRIPT_DIR";
+cd "$PROJECT_ROOT";
 
 ##
 ## Parse the command line arguments.
@@ -148,7 +149,7 @@ echo "";
 ##
 ## Call the actual build script.
 echo "Calling: $(pw_FM $PLATFORM_BUILD_SCRIPT)";
-"$PLATFORM_BUILD_SCRIPT"  $MODE;
+"$PLATFORM_BUILD_SCRIPT" "$MODE" "$BUILD_DIR" "$PROJECT_ROOT";
 
 
 
@@ -193,5 +194,3 @@ echo "Calling: $(pw_FM $PLATFORM_BUILD_SCRIPT)";
 #     mv "${ZIP_NAME}.zip" "../";     ## Put the .zip on the right place.
 #     cd - > /dev/null                ## Go back...
 # fi;
-
-echo "-";
