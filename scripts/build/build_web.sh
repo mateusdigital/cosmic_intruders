@@ -29,8 +29,11 @@ source /usr/local/src/pixelwizards/shellscript_utils/main.sh
 ## Vars                                                                       ##
 ##----------------------------------------------------------------------------##
 MODE="$1";
-BUILD_DIR=$(pw_realpath "$2/web");
-PROJECT_ROOT=$(pw_realpath "$3");
+PROJECT_ROOT=$(pw_realpath "$2");
+BUILD_DIR=$(pw_realpath "$3/web_${MODE}");
+RELEASE_DIR="$(pw_realpath $4/web_${MODE})";
+MAKE_ZIP="$5";
+VERSION="$6";
 
 LIBS_ROOT_DIR="./lib/Cooper";
 GAME_ROOT_DIR="./game";
@@ -67,23 +70,48 @@ test -d "$ASSETS_DIR"    || pw_log_fatal "Missing directory: ($ASSETS_DIR)";
 
 ##
 ## Run the em++.
-em++ $CXX_FLAGS                                 \
-    -std=c++14                                  \
-    -I"$LIBS_ROOT_DIR"                          \
-    -I"$LIBS_ROOT_DIR"/Cooper                   \
-    -I"$GAME_ROOT_DIR"                          \
-    -o "$BUILD_DIR"/CosmicIntruders.html \
-    $(find "$LIBS_ROOT_DIR" -iname "*.cpp")     \
-    $(find "$GAME_ROOT_DIR" -iname "*.cpp")     \
-    --embed-file "$ASSETS_DIR"                  \
-    -s USE_SDL=2                                \
-    -s USE_SDL_TTF=2                            \
-    -s USE_SDL_IMAGE=2                          \
-    -s SDL2_IMAGE_FORMATS='["png"]'             \
-    -s LEGACY_GL_EMULATION=0                    \
-    -s NO_EXIT_RUNTIME=1
+# em++ $CXX_FLAGS                                 \
+#     -std=c++14                                  \
+#     -I"$LIBS_ROOT_DIR"                          \
+#     -I"$LIBS_ROOT_DIR"/Cooper                   \
+#     -I"$GAME_ROOT_DIR"                          \
+#     -o "$BUILD_DIR"/CosmicIntruders.html \
+#     $(find "$LIBS_ROOT_DIR" -iname "*.cpp")     \
+#     $(find "$GAME_ROOT_DIR" -iname "*.cpp")     \
+#     --embed-file "$ASSETS_DIR"                  \
+#     -s USE_SDL=2                                \
+#     -s USE_SDL_TTF=2                            \
+#     -s USE_SDL_IMAGE=2                          \
+#     -s SDL2_IMAGE_FORMATS='["png"]'             \
+#     -s LEGACY_GL_EMULATION=0                    \
+#     -s NO_EXIT_RUNTIME=1
 
 echo $(pw_FG "Done...");
+
+##
+## Copy the "assets" files to the build folder
+cp -R $PROJECT_ROOT/release_files/web/* $BUILD_DIR;
+
+
+##
+## Make the release file.
+if [ "$MAKE_ZIP" == "true" ]; then
+    mkdir -p "$RELEASE_DIR";
+
+    cp -R $BUILD_DIR/* $RELEASE_DIR;
+
+    ## Memory file is generated only in -O>2 builds...
+    if [ -e $BUILD_DIR/CosmicIntruders.html.mem ]; then
+         cp $BUILD_DIR/CosmicIntruders.html.mem $RELEASE_DIR;
+    fi;
+
+    cd "$RELEASE_DIR";
+        ZIP_NAME="web_${MODE}_${VERSION}.zip";
+        zip -r $ZIP_NAME ./*
+        mv $ZIP_NAME ../
+    cd - > /dev/null
+fi;
+
 
 # package_web()
 # {
@@ -95,27 +123,8 @@ echo $(pw_FG "Done...");
 #     local BUILD_DIR="$BUILD_WEB_DIR"
 #     local TARGET_RESOURCES_DIR="$RESOURCES_DIR/$TARGET"
 
-#     ##--------------------------------------------------------------------------
-#     ## Create package dir.
-#     echo "--> Creating package directory...";
-#     echo "    $TARGET_PKG_DIR";
 
-#     ## This is a temp folder so make sure that is't clean.
-#     rm -f $TARGET_PKG_DIR/temp;
 
-#     mkdir -p "$TARGET_PKG_DIR";
-#     mkdir -p "$TARGET_PKG_DIR/temp";
-
-#     ##--------------------------------------------------------------------------
-#     ## Copy the files.
-#     echo "--> Copying files...";
-#     cp $BUILD_DIR/CosmicIntruders.js   $TARGET_PKG_DIR/temp;
-#     cp $BUILD_DIR/CosmicIntruders.html $TARGET_PKG_DIR/temp;
-
-#     ## Memory file is generated only in -O >2 builds...
-#     if [ -e $BUILD_DIR/CosmicIntruders.html.mem ]; then
-#          cp $BUILD_DIR/CosmicIntruders.html.mem $TARGET_PKG_DIR/temp;
-#     fi;
 
 #     cp -R $TARGET_RESOURCES_DIR/* $TARGET_PKG_DIR/temp;
 

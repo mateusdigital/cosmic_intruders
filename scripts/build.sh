@@ -30,7 +30,7 @@ source /usr/local/src/pixelwizards/shellscript_utils/main.sh
 SCRIPT_DIR="$(pw_get_script_dir)";
 PROJECT_ROOT=$(pw_realpath "$SCRIPT_DIR/..");
 BUILD_DIR=$(pw_realpath "$SCRIPT_DIR/../build");
-RELEASES_DIR=$(pw_realpath "$SCRIPT_DIR/../releases");
+RELEASE_DIR=$(pw_realpath "$SCRIPT_DIR/../releases");
 
 MODE="debug";
 PLATFORM="desktop";
@@ -72,8 +72,8 @@ clean()
     echo "   Build path: $(pw_FC $BUILD_DIR)";
     rm -vrf "$BUILD_DIR"
 
-    echo "   Releases path: $(pw_FC $RELEASES_DIR)";
-    rm -vrf "$RELEASES_DIR"
+    echo "   Releases path: $(pw_FC $RELEASE_DIR)";
+    rm -vrf "$RELEASE_DIR"
 
     exit 0;
 }
@@ -149,7 +149,20 @@ echo "";
 ##
 ## Call the actual build script.
 echo "Calling: $(pw_FM $PLATFORM_BUILD_SCRIPT)";
-"$PLATFORM_BUILD_SCRIPT" "$MODE" "$BUILD_DIR" "$PROJECT_ROOT";
+## @notice(stdmatt): Due the current state of the pw_realpath that's failing
+## to make absolute paths for paths that don't exists yet we need to create
+## the build directory before :(
+mkdir -p "$BUILD_DIR";
+mkdir -p "$RELEASE_DIR";
+
+"$PLATFORM_BUILD_SCRIPT" \
+    "$MODE"              \
+    "$PROJECT_ROOT"      \
+    "$BUILD_DIR"         \
+    "$RELEASE_DIR"       \
+    "$MAKE_ZIP"          \
+    "$VERSION";
+
 
 
 
