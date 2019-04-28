@@ -95,7 +95,8 @@ cp -R $PROJECT_ROOT/release_files/web/* $BUILD_DIR;
 if [ "$MAKE_ZIP" == "true" ]; then
     mkdir -p "$RELEASE_DIR";
 
-    cp -R $BUILD_DIR/* $RELEASE_DIR;
+    cp -R $BUILD_DIR/* $RELEASE_DIR
+    cp $RELEASE_DIR/cosmic.html $RELEASE_DIR/index.html;
 
     ## Memory file is generated only in -O>2 builds...
     if [ -e $BUILD_DIR/CosmicIntruders.html.mem ]; then
@@ -108,34 +109,3 @@ if [ "$MAKE_ZIP" == "true" ]; then
         mv $ZIP_NAME ../
     cd - > /dev/null
 fi;
-
-
-# package_web()
-# {
-#     ##--------------------------------------------------------------------------
-#     ## Local vars.
-#     local MODE="$1";
-#     local TARGET="web";
-#     local TARGET_PKG_DIR="$PKG_WEB_DIR";
-#     local BUILD_DIR="$BUILD_WEB_DIR"
-#     local TARGET_RESOURCES_DIR="$RESOURCES_DIR/$TARGET"
-
-
-
-
-#     cp -R $TARGET_RESOURCES_DIR/* $TARGET_PKG_DIR/temp;
-
-#     ##--------------------------------------------------------------------------
-#     ## Make a zip.
-#     echo "--> Creating zip file...";
-#     cd $TARGET_PKG_DIR/temp;               ## Change the cwd for zip.
-#         zip -r $TARGET_PKG_DIR/$MODE.zip . ## Run zip.
-#     cd - 2> /dev/null                      ## Restore the cwd.
-
-#     ##--------------------------------------------------------------------------
-#     ## Clean temporary folder.
-#     rm -rf $TARGET_PKG_DIR/temp;
-
-#     ##--------------------------------------------------------------------------
-#     echo "--> Done...";
-# }
