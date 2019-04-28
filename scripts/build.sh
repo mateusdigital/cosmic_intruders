@@ -1,18 +1,17 @@
+#!/usr/bin/env bash
 ##~---------------------------------------------------------------------------##
-##                     _______  _______  _______  _     _                     ##
-##                    |   _   ||       ||       || | _ | |                    ##
-##                    |  |_|  ||       ||   _   || || || |                    ##
-##                    |       ||       ||  | |  ||       |                    ##
-##                    |       ||      _||  |_|  ||       |                    ##
-##                    |   _   ||     |_ |       ||   _   |                    ##
-##                    |__| |__||_______||_______||__| |__|                    ##
-##                             www.amazingcow.com                             ##
+##                        _      _                 _   _                      ##
+##                    ___| |_ __| |_ __ ___   __ _| |_| |_                    ##
+##                   / __| __/ _` | '_ ` _ \ / _` | __| __|                   ##
+##                   \__ \ || (_| | | | | | | (_| | |_| |_                    ##
+##                   |___/\__\__,_|_| |_| |_|\__,_|\__|\__|                   ##
+##                                                                            ##
 ##  File      : build.sh                                                      ##
-##  Project   : CosmicIntruders                                               ##
+##  Project   : Cosmic Intruders                                              ##
 ##  Date      : Nov 17, 2017                                                  ##
 ##  License   : GPLv3                                                         ##
-##  Author    : n2omatt <n2omatt@amazingcow.com>                              ##
-##  Copyright : AmazingCow - 2018                                             ##
+##  Author    : stdmatt <stdmatt@pixelwizards.io>                             ##
+##  Copyright : stdmatt - 2017 - 2019                                         ##
 ##                                                                            ##
 ##  Description :                                                             ##
 ##                                                                            ##
@@ -109,7 +108,7 @@ validate_options()
 
     ##
     ## Check if platform is valid.
-    PLATFORM_BUILD_SCRIPT="${SCRIPT_DIR}/build/build_${PLATFORM}.sh";
+    PLATFORM_BUILD_SCRIPT="${SCRIPT_DIR}/platforms/build_${PLATFORM}.sh";
     test -f "$PLATFORM_BUILD_SCRIPT" ||
         pw_log_fatal "Invalid platform: ($PLATFORM)";
 

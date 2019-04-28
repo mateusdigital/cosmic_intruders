@@ -20,8 +20,8 @@
 
 //------------------------------------------------------------------------------
 // The game version.
-#define COW_COSMIC_INTRUDERS_VERSION_MAJOR    "1"
-#define COW_COSMIC_INTRUDERS_VERSION_MINOR    "1"
+#define COW_COSMIC_INTRUDERS_VERSION_MAJOR    "2"
+#define COW_COSMIC_INTRUDERS_VERSION_MINOR    "0"
 #define COW_COSMIC_INTRUDERS_VERSION_REVISION "0"
 
 #define COW_COSMIC_INTRUDERS_VERSION           \

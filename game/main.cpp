@@ -23,17 +23,26 @@
 #include "Game/include/Helpers/SceneHelper.h"
 #include "Game/include/Helpers/Storage.h"
 
+
 //----------------------------------------------------------------------------//
 // Entry Point                                                                //
 //----------------------------------------------------------------------------//
 int main(int argc, char *argv[])
 {
-    //--------------------------------------------------------------------------
+    //
+    // Window and Design Sizes.
+    constexpr auto kDesignWidth  = 800;
+    constexpr auto kDesignHeight = 730;
+
+    constexpr auto kWindowWidth  = kDesignWidth  * 0.9f;
+    constexpr auto kWindowHeight = kDesignHeight * 0.9f;
+
+    //
     // Init
     Cooper::Log     ::Init();
     Cooper::Graphics::Init(
-        800 * 0.7, 730 * 0.7,
-        800, 730,
+        kWindowWidth, kWindowHeight,
+        kDesignWidth, kDesignHeight,
         CosmicIntruders::GameUtils::kWindowCaption
     );
     Cooper::RES     ::Init(CosmicIntruders::GameUtils::kBaseAssetsPath);
@@ -45,7 +54,7 @@ int main(int argc, char *argv[])
         Cooper::Log::SetLogLevel(Cooper::Log::LOG_LEVEL_NONE);
     #endif //COOPER_DEBUG
 
-    //--------------------------------------------------------------------------
+    //
     // Run game.
     CosmicIntruders::GameUtils::Init();
     CosmicIntruders::Storage  ::Init();
@@ -53,7 +62,7 @@ int main(int argc, char *argv[])
     CosmicIntruders::SceneHelper::GoToSplashScene();
     Cooper::Game::Instance()->Run();
 
-    //--------------------------------------------------------------------------
+    //
     // Shutdown
     Cooper::Game    ::Shutdown();
     Cooper::Input   ::Shutdown();
