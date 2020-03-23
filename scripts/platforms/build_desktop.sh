@@ -46,7 +46,7 @@ echo "Building at: ${BUILD_DIR}";
 ## Go to the build directory, this eases the cmake operations...
 mkdir -p "$BUILD_DIR";
 
-cmake "${SCRIPT_DIR}/CMakelistst.txt"           \
+cmake "${SCRIPT_DIR}/CMakelists.txt"           \
     -B "${BUILD_DIR}"                           \
     -D -DCMAKE_BUILD_TYPE=$"PROJECT_BUILD_MODE";
 
