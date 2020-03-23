@@ -25,22 +25,21 @@ source /usr/local/src/stdmatt/shellscript_utils/main.sh
 ##----------------------------------------------------------------------------##
 ## Vars                                                                       ##
 ##----------------------------------------------------------------------------##
-OS_NAME=$(pw_os_get_simple_name);
+# OS_NAME=$(pw_os_get_simple_name);
 
-MODE="$1";
-CMAKE_ROOT="$(pw_realpath $2)";
-BUILD_DIR="$(pw_realpath $3/${OS_NAME}_${MODE})";
-RELEASE_DIR="$(pw_realpath $4/${OS_NAME}_${MODE})";
-MAKE_ZIP="$5";
-VERSION="$6";
-
+# MODE="$1";
+# CMAKE_ROOT="$(pw_realpath $2)";
+# BUILD_DIR="$(pw_realpath $3/${OS_NAME}_${MODE})";
+# RELEASE_DIR="$(pw_realpath $4/${OS_NAME}_${MODE})";
+# VERSION="$6";
+PLATFORM_NAME="$(pw_os_get_simple_name)";
+BUILD_DIR="${PROJECT_BUILD_DIR}/${PROJECT_NAME}_${PLATFORM_NAME}_${PROJECT_VERSION}";
 
 ##----------------------------------------------------------------------------##
 ## Script                                                                     ##
 ##----------------------------------------------------------------------------##
 echo "Desktop Build";
-echo "  Build   at: $(pw_FC $BUILD_DIR)";
-echo "  Release at: $(pw_FC $RELEASE_DIR)";
+echo "Building at: ${BUILD_DIR}";
 
 ##
 ## Go to the build directory, this eases the cmake operations...
@@ -52,17 +51,3 @@ cd "$BUILD_DIR";
 cd - > /dev/null
 
 echo "$(pw_FG Done...)";
-
-##
-## Make the release file.
-if [ "$MAKE_ZIP" == "true" ]; then
-    mkdir -p "$RELEASE_DIR";
-    cp    $BUILD_DIR/CosmicIntruders $RELEASE_DIR;
-    cp -R $CMAKE_ROOT/assets         $RELEASE_DIR;
-
-    cd "$RELEASE_DIR";
-        ZIP_NAME="${OS_NAME}_${MODE}_${VERSION}.zip";
-        zip -r $ZIP_NAME ./*
-        mv $ZIP_NAME ../
-    cd - > /dev/null
-fi;

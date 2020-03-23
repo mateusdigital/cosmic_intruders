@@ -1,41 +1,36 @@
 #!/usr/bin/env bash
-##~---------------------------------------------------------------------------##
-##                        _      _                 _   _                      ##
-##                    ___| |_ __| |_ __ ___   __ _| |_| |_                    ##
-##                   / __| __/ _` | '_ ` _ \ / _` | __| __|                   ##
-##                   \__ \ || (_| | | | | | | (_| | |_| |_                    ##
-##                   |___/\__\__,_|_| |_| |_|\__,_|\__|\__|                   ##
-##                                                                            ##
-##  File      : build.sh                                                      ##
-##  Project   : Cosmic Intruders                                              ##
-##  Date      : Nov 17, 2017                                                  ##
-##  License   : GPLv3                                                         ##
-##  Author    : stdmatt <stdmatt@pixelwizards.io>                             ##
-##  Copyright : stdmatt - 2017 - 2019                                         ##
-##                                                                            ##
-##  Description :                                                             ##
-##                                                                            ##
-##---------------------------------------------------------------------------~##
 
 ##----------------------------------------------------------------------------##
 ## Imports                                                                    ##
 ##----------------------------------------------------------------------------##
 source /usr/local/src/stdmatt/shellscript_utils/main.sh
 
+##----------------------------------------------------------------------------##
+## Constants                                                                  ##
+##----------------------------------------------------------------------------##
+PROJECT_NAME="cosmic_intruders";
+
 
 ##----------------------------------------------------------------------------##
 ## Vars                                                                       ##
 ##----------------------------------------------------------------------------##
+## Dirs
 SCRIPT_DIR="$(pw_get_script_dir)";
-PROJECT_ROOT=$(pw_realpath "$SCRIPT_DIR/..");
-BUILD_DIR=$(pw_realpath "$SCRIPT_DIR/../build");
-RELEASE_DIR=$(pw_realpath "$SCRIPT_DIR/../releases");
+PROJECT_ROOT=$(pw_abspath "$SCRIPT_DIR/..");
+BUILD_DIR=$(pw_abspath "$PROJECT_ROOT/build");
+DIST_DIR=$(pw_abspath "$PROJECT_ROOT/dist");
 
-MODE="debug";
-PLATFORM="desktop";
-MAKE_ZIP="false";
-VERSION="";
-PLATFORM_BUILD_SCRIPT="";
+## Info
+BUILD_MODE="debug";
+BUILD_PLATFORM="desktop";
+PROJECT_VERSION="$(bump-the-version                        \
+    "${PROJECT_ROOT}/game/Game/include/Helpers/Version.h"  \
+    "#define COW_COSMIC_INTRUDERS_VERSION"                 \
+    "show")";
+DIST_FILES="                   \
+    ${BUILD_DIR}/$PROJECT_NAME \
+    ${PROJECT_ROOT}/assets/    \
+";
 
 
 ##----------------------------------------------------------------------------##
@@ -47,15 +42,13 @@ show_help()
     cat << END_TEXT
 Usage:
     build.sh
-      -h | --help                        - Show this info.
-      -c | --clean                       - Cleans the build files.
-      -m | --mode     <*debug | release> - Compile mode.
-      -p | --platform <*desktop | web>   - Target platform.
-      -z | --zip                         - Generate the release zip file.
+      --help                          - Show this info.
+      --clean                         - Cleans the build files.
+      --mode     <*debug   | release> - Compile mode.
+      --platform <*desktop | web>     - Target platform.
+      --dist                          - Generate the release zip file.
 
     Options marked with * is assumed to be the default if none is given.
-
-    [Windows] builds requires that the VsDevCmd.bat path be correctly set.
     [Web] builds requires that emscripten to be correctly set.
 END_TEXT
 
@@ -66,143 +59,102 @@ END_TEXT
 ##------------------------------------------------------------------------------
 clean()
 {
-    echo "Cleaning files...";
+    pw_func_log "Cleaning files...";
 
-    echo "   Build path: $(pw_FC $BUILD_DIR)";
-    rm -vrf "$BUILD_DIR"
+    pw_func_log "   Build path: $(pw_FC $BUILD_DIR)";
+    rm -rf "${BUILD_DIR}";
 
-    echo "   Releases path: $(pw_FC $RELEASE_DIR)";
-    rm -vrf "$RELEASE_DIR"
-
-    exit 0;
+    pw_func_log "   Dist path: $(pw_FC $DIST_DIR)";
+    rm -rf "${DIST_DIR}"
 }
 
-
-##------------------------------------------------------------------------------
-parse_cmd_line()
+pw_string_in()
 {
-    for FLAG in $@; do
-        shift;
-        case $FLAG in
-            -h | --help     ) show_help 0;     ;;
-            -c | --clean    ) clean;           ;;
-            -m | --mode     ) MODE="$1";       ;;
-            -p | --platform ) PLATFORM="$1";   ;;
-            -z | --zip      ) MAKE_ZIP="true"; ;;
-            -v | --version  ) VERSION="$1"     ;;
-        esac
+    local NEEDLE="${@:1:1}";
+    local HAYSTACK="${@:2:10000}"; ## @magic(stdmatt): Remove the magic numbers.
+    for ITEM in $HAYSTACK; do
+        if [ "$NEEDLE" == "$ITEM" ]; then
+            echo "$NEEDLE";
+            return 0;
+        fi;
     done;
-}
-
-##------------------------------------------------------------------------------
-validate_options()
-{
-    MODE=$(pw_to_lower $MODE);
-    PLATFORM=$(pw_to_lower $PLATFORM);
-
-    ##
-    ## Check if MODE is valid.
-    test $MODE == "debug"   || \
-    test $MODE == "release" || \
-         pw_log_fatal "Invalid mode: ($MODE)";
-
-    ##
-    ## Check if platform is valid.
-    PLATFORM_BUILD_SCRIPT="${SCRIPT_DIR}/platforms/build_${PLATFORM}.sh";
-    test -f "$PLATFORM_BUILD_SCRIPT" ||
-        pw_log_fatal "Invalid platform: ($PLATFORM)";
-
-    ##
-    ## Check if version number is valid.
-    if [ "$MAKE_ZIP" == "true" ]; then
-        local GREP_RESULT=$(  \
-            echo "$VERSION" | \
-            grep "^[[:digit:]]\.[[:digit:]]\.[[:digit:]]$" \
-        );
-
-        test -z "$GREP_RESULT" && pw_log_fatal "Version number is invalid: ($VERSION)";
-    fi;
+    echo "";
+    return 1;
 }
 
 
 ##----------------------------------------------------------------------------##
 ## Script                                                                     ##
 ##----------------------------------------------------------------------------##
-cd "$PROJECT_ROOT";
+cd "${PROJECT_ROOT}";
 
 ##
 ## Parse the command line arguments.
-parse_cmd_line "$@";
-validate_options;
+if [ -n "$(pw_getopt_exists "--clean" "$@")" ]; then
+    clean;
+    exit 0;
+fi;
+
+MODE=$(pw_getopt_arg "--mode" "$@");
+test -n "$MODE" && BUILD_MODE="$MODE";
+test -z "$(pw_string_in "$BUILD_MODE" "release" "debug")" \
+    && pw_log_fatal "Invalid build mode: ($BUILD_MODE)";
+
+PLATFORM=$(pw_getopt_arg "--platform" "$@");
+test -n "$PLATFORM" && BUILD_PLATFORM="$PLATFORM";
+test -z "$(pw_string_in "$BUILD_PLATFORM" "web" "desktop")" \
+    && pw_log_fatal "Invalid build platform: ($BUILD_PLATFORM)";
+
 
 ##
-## Log ;D
-echo "Cosmic Intruders";
-echo "Build Script directory : $(pw_FC $SCRIPT_DIR)";
-echo "Compile mode           : $(pw_FC $MODE      )";
-echo "Target platform        : $(pw_FC $PLATFORM  )";
-echo "Generate release zip   : $(pw_FC $MAKE_ZIP  )";
-echo "Current version        : $(pw_FC $VERSION   )";
+## Build ;D
+echo "Bulding (${PROJECT_NAME})";
+echo "Build Script directory : $(pw_FC $SCRIPT_DIR     )";
+echo "Build directory        : $(pw_FC $BUILD_DIR      )";
+echo "Dist  directory        : $(pw_FC $DIST_DIR       )";
+echo "Build mode             : $(pw_FC $BUILD_MODE     )";
+echo "Build platform         : $(pw_FC $BUILD_PLATFORM )";
+echo "Current version        : $(pw_FC $PROJECT_VERSION)";
 echo "";
 
-##
-## Call the actual build script.
-echo "Calling: $(pw_FM $PLATFORM_BUILD_SCRIPT)";
-## @notice(stdmatt): Due the current state of the pw_realpath that's failing
-## to make absolute paths for paths that don't exists yet we need to create
-## the build directory before :(
 mkdir -p "$BUILD_DIR";
-mkdir -p "$RELEASE_DIR";
 
-"$PLATFORM_BUILD_SCRIPT" \
-    "$MODE"              \
-    "$PROJECT_ROOT"      \
-    "$BUILD_DIR"         \
-    "$RELEASE_DIR"       \
-    "$MAKE_ZIP"          \
-    "$VERSION";
+## Call the correct build script for each platform.
+export PROJECT_ROOT="$PROJECT_ROOT";
+export PROJECT_NAME="$PROJECT_NAME";
+export PROJECT_BUILD_DIR="$BUILD_DIR";
+export PROJECT_BUILD_MODE="$BUILD_MODE";
+export PROJECT_VERSION="$PROJECT_VERSION";
 
+if [ "$BUILD_PLATFORM" == "desktop" ]; then
+    "${SCRIPT_DIR}/platforms/build_desktop.sh";
+else
+    "${SCRIPT_DIR}/platforms/build_web.sh";
+fi;
 
+if [ $? != 0 ]; then
+    pw_log_fatal "Failed to build - Will not create the dist files...";
+fi;
 
+##
+## Create the distribution file.
+if [ -n "$(pw_getopt_exists "--dist" "$@")" ]; then
+    PLATFORM=$(pw_os_get_simple_name);
+    echo "Packaging (${PROJECT_NAME}) version: (${PROJECT_VERSION}) for platform: (${PLATFORM})";
 
-## @todo(stdmatt): Check how to zip files....
-# ##----------------------------------------------------------------------------##
-# ## Make zip                                                                   ##
-# ##----------------------------------------------------------------------------##
-# if [ "$MAKE_ZIP" == "true" ]; then
-#     echo "Make Zip - Version ($VERSION)";
+    # PACKAGE_NAME="${PROJECT_NAME}_${PLATFORM}_${PROJECT_VERSION}";
+    # PACKAGE_DIR="${DIST_DIR}/${PACKAGE_NAME}";
 
-#     ##--------------------------------------------------------------------------
-#     ## Create the target directory.
-#     ZIP_NAME="${PLATFORM}_${MODE}_v${VERSION}";
-#     TARGET_PATH="../$ZIP_NAME";
+    # ## Clean the directory.
+    # rm    -rf "${PACKAGE_DIR}";
+    # mkdir -p  "${PACKAGE_DIR}";
 
-#     rm -rf "$TARGET_PATH"; ## Clean
-#     mkdir  "$TARGET_PATH"; ## Create new.
+    # ## Copy the files to the directory.
+    # for ITEM in $DIST_FILES; do
+    #     cp -R "$ITEM" "${PACKAGE_DIR}";
+    # done;
 
-#     ##--------------------------------------------------------------------------
-#     ## Copy the files.
-#     test -f "./files_to_zip.sh" || pw_log_fatal "Missing file: (files_to_zip.sh)";
-
-#     FILES_TO_ZIP=$(./files_to_zip.sh "$PLATFORM");
-#     for ITEM in $FILES_TO_ZIP; do
-#         ##----------------------------------------------------------------------
-#         ## Directory - Copy its contents.
-#         if [ -d "$ITEM" ]; then
-#             echo "Copying ($ITEM) -> ($TARGET_PATH)";
-#             cp -R $ITEM $TARGET_PATH;
-#         ##----------------------------------------------------------------------
-#         ## Regular file - Just copy it.
-#         else
-#             echo "Copying ($CP_PATH) -> ($TARGET_PATH)";
-#             cp  $ITEM $TARGET_PATH;
-#         fi;
-#     done;
-
-#     ##--------------------------------------------------------------------------
-#     ## Make the zip.
-#     cd "${TARGET_PATH}";            ## Need to make the contents more nicer.
-#     zip -rv "${ZIP_NAME}.zip" ".";  ## Zip everything on this folder.
-#     mv "${ZIP_NAME}.zip" "../";     ## Put the .zip on the right place.
-#     cd - > /dev/null                ## Go back...
-# fi;
+    # cd "${DIST_DIR}"
+    # zip -r "${PACKAGE_NAME}.zip" "./${PACKAGE_NAME}";
+    # cd -
+fi;
