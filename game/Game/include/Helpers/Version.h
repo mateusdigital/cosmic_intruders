@@ -18,13 +18,4 @@
 
 #pragma once
 
-//------------------------------------------------------------------------------
-// The game version.
-#define COW_COSMIC_INTRUDERS_VERSION_MAJOR    "2"
-#define COW_COSMIC_INTRUDERS_VERSION_MINOR    "0"
-#define COW_COSMIC_INTRUDERS_VERSION_REVISION "0"
-
-#define COW_COSMIC_INTRUDERS_VERSION           \
-        COW_COSMIC_INTRUDERS_VERSION_MAJOR "." \
-        COW_COSMIC_INTRUDERS_VERSION_MINOR "." \
-        COW_COSMIC_INTRUDERS_VERSION_REVISION
+#define COW_COSMIC_INTRUDERS_VERSION  "2.0.0"
