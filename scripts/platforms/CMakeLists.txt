@@ -16,17 +16,20 @@
 ##                                                                            ##
 ##---------------------------------------------------------------------------~##
 
+## External Vars...
+## @TODO(stdmatt): Add  an output saying that we need to export this vars...
+set(PROJECT_NAME $ENV{PROJECT_NAME})
+set(PROJECT_ROOT $ENV{PROJECT_ROOT})
+
 cmake_minimum_required(VERSION 3.5)
-project(CosmicIntruders)
+project(${PROJECT_NAME})
+
 
 ##----------------------------------------------------------------------------##
 ## Compiler Definitions                                                       ##
 ##----------------------------------------------------------------------------##
 set(CMAKE_CXX_STANDARD          14)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
-if (MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14")
-endif()
 
 if(NOT CMAKE_BUILD_TYPE)
     message("[Setting build type to Debug]")
@@ -44,22 +47,18 @@ message("[Build type is configure to: ${CMAKE_BUILD_TYPE}]")
 ##----------------------------------------------------------------------------##
 ## Include Directories                                                        ##
 ##----------------------------------------------------------------------------##
-## Cooper.
 include_directories(
-    ${CMAKE_SOURCE_DIR}/lib/Cooper
-)
-
-##------------------------------------------------------------------------------
-## Game.
-include_directories(
-    ${CMAKE_SOURCE_DIR}/game
+    ## Cooper.
+    ${PROJECT_ROOT}/lib/Cooper
+    ## Game.
+    ${PROJECT_ROOT}/game
 )
 
 
 ##----------------------------------------------------------------------------##
 ## Source Files                                                               ##
 ##----------------------------------------------------------------------------##
-add_subdirectory(lib/Cooper)
+add_subdirectory(${PROJECT_ROOT}/lib/Cooper)
 
 set(SOURCE_FILES
     ./game/main.cpp
@@ -99,10 +98,10 @@ set(SOURCE_FILES
 ##----------------------------------------------------------------------------##
 ## Executable Definitions                                                     ##
 ##----------------------------------------------------------------------------##
-add_executable(CosmicIntruders ${SOURCE_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 
 ##----------------------------------------------------------------------------##
 ## Link Libraries                                                             ##
 ##----------------------------------------------------------------------------##
-target_link_libraries(CosmicIntruders LINK_PUBLIC Cooper)
+target_link_libraries(${PROJECT_NAME} LINK_PUBLIC Cooper)

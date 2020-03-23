@@ -32,6 +32,7 @@ source /usr/local/src/stdmatt/shellscript_utils/main.sh
 # BUILD_DIR="$(pw_realpath $3/${OS_NAME}_${MODE})";
 # RELEASE_DIR="$(pw_realpath $4/${OS_NAME}_${MODE})";
 # VERSION="$6";
+SCRIPT_DIR="$(pw_get_script_dir)";
 PLATFORM_NAME="$(pw_os_get_simple_name)";
 BUILD_DIR="${PROJECT_BUILD_DIR}/${PROJECT_NAME}_${PLATFORM_NAME}_${PROJECT_VERSION}";
 
@@ -45,9 +46,12 @@ echo "Building at: ${BUILD_DIR}";
 ## Go to the build directory, this eases the cmake operations...
 mkdir -p "$BUILD_DIR";
 
-cd "$BUILD_DIR";
-    cmake "$CMAKE_ROOT" -DCMAKE_BUILD_TYPE=$MODE
+cmake "${SCRIPT_DIR}/CMakelistst.txt"           \
+    -B "${BUILD_DIR}"                           \
+    -D -DCMAKE_BUILD_TYPE=$"PROJECT_BUILD_MODE";
+
+cd "${BUILD_DIR}";
     cmake --build .
-cd - > /dev/null
+cd --;
 
 echo "$(pw_FG Done...)";
