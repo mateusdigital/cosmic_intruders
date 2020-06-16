@@ -25,44 +25,33 @@ source /usr/local/src/stdmatt/shellscript_utils/main.sh
 ##----------------------------------------------------------------------------##
 ## Vars                                                                       ##
 ##----------------------------------------------------------------------------##
-MODE="$1";
-PROJECT_ROOT=$(pw_realpath "$2");
-BUILD_DIR=$(pw_realpath "$3/web_${MODE}");
-RELEASE_DIR="$(pw_realpath $4/web_${MODE})";
-MAKE_ZIP="$5";
-VERSION="$6";
+SCRIPT_DIR="$(pw_get_script_dir)";
+PLATFORM_NAME="web";
+BUILD_DIR="${PROJECT_BUILD_DIR}/${PROJECT_NAME}_${PLATFORM_NAME}_${PROJECT_VERSION}";
 
-LIBS_ROOT_DIR="./lib/Cooper";
-GAME_ROOT_DIR="./game";
-ASSETS_DIR="./assets";
+LIBS_ROOT_DIR="${PROJECT_ROOT}/lib/Cooper";
+GAME_ROOT_DIR="${PROJECT_ROOT}/game";
+ASSETS_DIR="${PROJECT_ROOT}/assets";
 
 
 ##----------------------------------------------------------------------------##
 ## Script                                                                     ##
 ##----------------------------------------------------------------------------##
-##
 ## Create build dir.
 mkdir -p "$BUILD_DIR";
 
 ##
 ## Decide the flags that we gonna pass to em++
 CXX_FLAGS="-O3 -DNDEBUG";
-if [ "$MODE" == "debug" ]; then
+if [ "$PROJECT_BUILD_MODE" == "debug" ]; then
     CXX_FLAGS="-g -DCOOPER_DEBUG";
 fi;
 
 ##
 ## Log
 echo "Web Build";
-
-echo "MODE          : $(pw_FC $MODE)";
-echo "GAME_ROOT_DIR : $(pw_FC $GAME_ROOT_DIR)";
-echo "LIBS_ROOT_DIR : $(pw_FC $LIBS_ROOT_DIR)";
-echo "ASSETS_DIR    : $(pw_FC $ASSETS_DIR)";
-
-test -d "$GAME_ROOT_DIR" || pw_log_fatal "Missing directory: ($GAME_ROOT_DIR)";
-test -d "$LIBS_ROOT_DIR" || pw_log_fatal "Missing directory: ($LIBS_ROOT_DIR)";
-test -d "$ASSETS_DIR"    || pw_log_fatal "Missing directory: ($ASSETS_DIR)";
+echo "Building at: ${BUILD_DIR}";
+mkdir -p "$BUILD_DIR";
 
 
 #
@@ -72,7 +61,7 @@ em++ $CXX_FLAGS                                 \
     -I"$LIBS_ROOT_DIR"                          \
     -I"$LIBS_ROOT_DIR"/Cooper                   \
     -I"$GAME_ROOT_DIR"                          \
-    -o "$BUILD_DIR"/CosmicIntruders.html \
+    -o "$BUILD_DIR"/CosmicIntruders.html        \
     $(find "$LIBS_ROOT_DIR" -iname "*.cpp")     \
     $(find "$GAME_ROOT_DIR" -iname "*.cpp")     \
     --embed-file "$ASSETS_DIR"                  \
@@ -88,24 +77,3 @@ echo $(pw_FG "Done...");
 ##
 ## Copy the "assets" files to the build folder
 cp -R $PROJECT_ROOT/release_files/web/* $BUILD_DIR;
-
-
-##
-## Make the release file.
-if [ "$MAKE_ZIP" == "true" ]; then
-    mkdir -p "$RELEASE_DIR";
-
-    cp -R $BUILD_DIR/* $RELEASE_DIR
-    cp $RELEASE_DIR/cosmic.html $RELEASE_DIR/index.html;
-
-    ## Memory file is generated only in -O>2 builds...
-    if [ -e $BUILD_DIR/CosmicIntruders.html.mem ]; then
-         cp $BUILD_DIR/CosmicIntruders.html.mem $RELEASE_DIR;
-    fi;
-
-    cd "$RELEASE_DIR";
-        ZIP_NAME="web_${MODE}_${VERSION}.zip";
-        zip -r $ZIP_NAME ./*
-        mv $ZIP_NAME ../
-    cd - > /dev/null
-fi;
