@@ -32,10 +32,13 @@ project(${PROJECT_NAME})
 set(CMAKE_CXX_STANDARD          14)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 
-if(NOT CMAKE_BUILD_TYPE)
-    message("[Setting build type to Debug]")
-    set(CMAKE_BUILD_TYPE Debug)
-endif()
+message("CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
+
+IF(CMAKE_BUILD_TYPE MATCHES Debug)
+    message("Debug build.")
+ELSEIF(CMAKE_BUILD_TYPE MATCHES Release)
+    message("Release build.")
+ENDIF()
 
 IF(${CMAKE_BUILD_TYPE} MATCHES "Debug")
     message("[Setting debug additional defines]")

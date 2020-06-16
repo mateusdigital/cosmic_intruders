@@ -41,12 +41,18 @@ echo "Desktop Build";
 echo "Building at: ${BUILD_DIR}";
 mkdir -p "$BUILD_DIR";
 
-cmake "${SCRIPT_DIR}/CMakelists.txt"            \
-    -B "${BUILD_DIR}"                           \
-    -D -DCMAKE_BUILD_TYPE="$PROJECT_BUILD_MODE";
-
 cd "${BUILD_DIR}";
-    cmake --build .
+    if [ "$PROJECT_BUILD_MODE" == "debug" ]; then
+        cmake "${SCRIPT_DIR}/CMakelists.txt"            \
+            -B "${BUILD_DIR}"                           \
+            -DCMAKE_BUILD_TYPE="Debug";
+        cmake --build .
+    else
+        cmake "${SCRIPT_DIR}/CMakelists.txt"            \
+            -B "${BUILD_DIR}"                           \
+            -DCMAKE_BUILD_TYPE="Release";
+        cmake --build . --config Release
+    fi;
 cd --;
 
 echo "$(pw_FG Done...)";

@@ -53,24 +53,27 @@ echo "Web Build";
 echo "Building at: ${BUILD_DIR}";
 mkdir -p "$BUILD_DIR";
 
-
-#
-# Run the em++.
+##
+## Run the em++.
 em++ $CXX_FLAGS                                 \
+    -O3                                         \
     -std=c++14                                  \
     -I"$LIBS_ROOT_DIR"                          \
     -I"$LIBS_ROOT_DIR"/Cooper                   \
     -I"$GAME_ROOT_DIR"                          \
+    -lidbfs.js                                  \
+    -DEMSCRIPTEN                                \
     -o "$BUILD_DIR"/CosmicIntruders.html        \
     $(find "$LIBS_ROOT_DIR" -iname "*.cpp")     \
     $(find "$GAME_ROOT_DIR" -iname "*.cpp")     \
-    --embed-file "$ASSETS_DIR"                  \
+    --embed-file "./assets"                     \
+    -s WASM=0                                   \
     -s USE_SDL=2                                \
     -s USE_SDL_TTF=2                            \
     -s USE_SDL_IMAGE=2                          \
     -s SDL2_IMAGE_FORMATS='["png"]'             \
     -s LEGACY_GL_EMULATION=0                    \
-    -s NO_EXIT_RUNTIME=1
+    -s NO_EXIT_RUNTIME=1                        \
 
 echo $(pw_FG "Done...");
 
