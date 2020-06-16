@@ -8,7 +8,7 @@ source /usr/local/src/stdmatt/shellscript_utils/main.sh
 ##----------------------------------------------------------------------------##
 ## Constants                                                                  ##
 ##----------------------------------------------------------------------------##
-PROJECT_NAME="cosmic_intruders";
+PROJECT_NAME="cosmic-intruders";
 
 
 ##----------------------------------------------------------------------------##
@@ -123,8 +123,10 @@ mkdir -p "$BUILD_DIR";
 export PROJECT_ROOT="$PROJECT_ROOT";
 export PROJECT_NAME="$PROJECT_NAME";
 export PROJECT_BUILD_DIR="$BUILD_DIR";
+export PROJECT_DIST_DIR="$DIST_DIR";
 export PROJECT_BUILD_MODE="$BUILD_MODE";
 export PROJECT_VERSION="$PROJECT_VERSION";
+
 
 if [ "$BUILD_PLATFORM" == "desktop" ]; then
     "${SCRIPT_DIR}/platforms/build_desktop.sh";
@@ -139,22 +141,9 @@ fi;
 ##
 ## Create the distribution file.
 if [ -n "$(pw_getopt_exists "--dist" "$@")" ]; then
-    PLATFORM=$(pw_os_get_simple_name);
-    echo "Packaging (${PROJECT_NAME}) version: (${PROJECT_VERSION}) for platform: (${PLATFORM})";
-
-    # PACKAGE_NAME="${PROJECT_NAME}_${PLATFORM}_${PROJECT_VERSION}";
-    # PACKAGE_DIR="${DIST_DIR}/${PACKAGE_NAME}";
-
-    # ## Clean the directory.
-    # rm    -rf "${PACKAGE_DIR}";
-    # mkdir -p  "${PACKAGE_DIR}";
-
-    # ## Copy the files to the directory.
-    # for ITEM in $DIST_FILES; do
-    #     cp -R "$ITEM" "${PACKAGE_DIR}";
-    # done;
-
-    # cd "${DIST_DIR}"
-    # zip -r "${PACKAGE_NAME}.zip" "./${PACKAGE_NAME}";
-    # cd -
+    if [ "$BUILD_PLATFORM" == "desktop" ]; then
+        "${SCRIPT_DIR}/platforms/dist_desktop.sh";
+    else
+        "${SCRIPT_DIR}/platforms/dist_web.sh";
+    fi;
 fi;
