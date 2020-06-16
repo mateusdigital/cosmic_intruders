@@ -10,14 +10,14 @@
 ##  Date      : Nov 17, 2017                                                  ##
 ##  License   : GPLv3                                                         ##
 ##  Author    : stdmatt <stdmatt@pixelwizards.io>                             ##
-##  Copyright : stdmatt - 2017 - 2019                                         ##
+##  Copyright : stdmatt - 2017 - 2020                                         ##
 ##                                                                            ##
 ##  Description :                                                             ##
 ##                                                                            ##
 ##---------------------------------------------------------------------------~##
 
 cmake_minimum_required(VERSION 3.5)
-project(CosmicIntruders)
+project(cosmic-intruders)
 
 ##----------------------------------------------------------------------------##
 ## Compiler Definitions                                                       ##
@@ -99,10 +99,10 @@ set(SOURCE_FILES
 ##----------------------------------------------------------------------------##
 ## Executable Definitions                                                     ##
 ##----------------------------------------------------------------------------##
-add_executable(CosmicIntruders ${SOURCE_FILES})
+add_executable(cosmic-intruders ${SOURCE_FILES})
 
 
 ##----------------------------------------------------------------------------##
 ## Link Libraries                                                             ##
 ##----------------------------------------------------------------------------##
-target_link_libraries(CosmicIntruders LINK_PUBLIC Cooper)
+target_link_libraries(cosmic-intruders LINK_PUBLIC Cooper)
