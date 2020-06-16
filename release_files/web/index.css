@@ -31,11 +31,6 @@ canvas.emscripten {
     color      : white;
 }
 
-#messageDiv {
-    text-align : center;
-    color      : white;
-}
-
 .container {
     display : flex;
     width   : 842px;
@@ -46,4 +41,12 @@ canvas.emscripten {
 .flex-item{
     text-align : right;
     flex-grow  : 1;
+}
+
+#footer {
+    position: absolute;
+    bottom: 1em;
+    text-align: center;
+    color: white;
+    width: 100%;
 }

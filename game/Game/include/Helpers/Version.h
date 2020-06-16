@@ -18,4 +18,4 @@
 
 #pragma once
 
-#define COW_COSMIC_INTRUDERS_VERSION  "2.0.0"
+#define COW_COSMIC_INTRUDERS_VERSION  "2.0.1"
