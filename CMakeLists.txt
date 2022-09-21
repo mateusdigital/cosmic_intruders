@@ -40,6 +40,8 @@ ENDIF()
 
 message("[Build type is configure to: ${CMAKE_BUILD_TYPE}]")
 
+add_definitions( -DCOW_COSMIC_INTRUDERS_VERSION=${GAME_VERSION} )
+
 
 ##----------------------------------------------------------------------------##
 ## Include Directories                                                        ##

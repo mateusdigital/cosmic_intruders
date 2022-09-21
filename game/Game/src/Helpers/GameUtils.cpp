@@ -18,8 +18,6 @@
 
 // Header
 #include "Game/include/Helpers/GameUtils.h"
-// CosmicIntruders
-#include "Game/include/Helpers/Version.h"
 
 
 // Usings
