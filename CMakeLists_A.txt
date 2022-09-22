@@ -16,45 +16,63 @@
 ##                                                                            ##
 ##---------------------------------------------------------------------------~##
 
+##
+## Vars expected to be given from the command line:
+##    GAME_NAME                 - String with the name of the project / executable.
+##    GAME_VERSION              - The version of the project -> will used as #define
+##    GAME_TARGET_PLATFORM      - pc / web                   -> Platform that game will be built for.
+##    GAME_BUILD_TYPE           - Release / Debug            -> Defaults to debug.
+##    GAME_EMSCRIPTEN_TOOLCHAIN - Where the Emscripten.cmake is located.
+
+
+##----------------------------------------------------------------------------##
+## Cmake Definitions                                                          ##
+##----------------------------------------------------------------------------##
 cmake_minimum_required(VERSION 3.5)
-project(cosmic-intruders)
+# set(CMAKE_VERBOSE_MAKEFILE on)
+
+##----------------------------------------------------------------------------##
+## Project Definitions                                                        ##
+##----------------------------------------------------------------------------##
+project(${GAME_NAME})
+
+message("[Project name:     ${GAME_NAME}]")
+message("[Project version:  ${GAME_VERSION}]")
+message("[Project platform: ${GAME_TARGET_PLATFORM}]")
+message("[Build type is:    ${CMAKE_BUILD_TYPE}]")
+
 
 ##----------------------------------------------------------------------------##
 ## Compiler Definitions                                                       ##
 ##----------------------------------------------------------------------------##
 set(CMAKE_CXX_STANDARD          14)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
-if (MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14")
-endif()
 
-if(NOT CMAKE_BUILD_TYPE)
+## Debug.
+if(NOT GAME_BUILD_TYPE) ## Default to debug if nothing is given....
     message("[Setting build type to Debug]")
-    set(CMAKE_BUILD_TYPE Debug)
+    set(${GAME_BUILD_TYPE} Debug)
 endif()
 
-IF(${CMAKE_BUILD_TYPE} MATCHES "Debug")
+set(CMAKE_BUILD_TYPE ${GAME_BUILD_TYPE})
+
+if(${CMAKE_BUILD_TYPE} MATCHES "Debug") ## Set additional defines for DEBUG
     message("[Setting debug additional defines]")
     add_definitions(-DCOOPER_DEBUG)
-ENDIF()
+endif()
 
-message("[Build type is configure to: ${CMAKE_BUILD_TYPE}]")
+## Project Version.
+add_definitions(-DCOW_COSMIC_INTRUDERS_VERSION=${GAME_VERSION})
+
 
 
 ##----------------------------------------------------------------------------##
 ## Include Directories                                                        ##
 ##----------------------------------------------------------------------------##
-## Cooper.
 include_directories(
     ${CMAKE_SOURCE_DIR}/lib/Cooper
-)
-
-##------------------------------------------------------------------------------
-## Game.
-include_directories(
     ${CMAKE_SOURCE_DIR}/game
 )
-
 
 ##----------------------------------------------------------------------------##
 ## Source Files                                                               ##
@@ -99,10 +117,37 @@ set(SOURCE_FILES
 ##----------------------------------------------------------------------------##
 ## Executable Definitions                                                     ##
 ##----------------------------------------------------------------------------##
-add_executable(cosmic-intruders ${SOURCE_FILES})
+add_executable(${GAME_NAME} ${SOURCE_FILES})
 
+# if(${GAME_TARGET_PLATFORM} STREQUAL "web")
+    set(ADDITIONAL_EMS_BUILD_FLAGS
+        " -DEMSCRIPTEN"
+        " -lidbfs.js"
+        " --embed-file ./assets"
+        " -s WASM=0"
+        " -s USE_SDL=2"
+        " -s USE_SDL_TTF=2"
+        " -s USE_SDL_IMAGE=2"
+        " -s SDL2_IMAGE_FORMATS='[\"png\"]'"
+        " -s LEGACY_GL_EMULATION=0"
+        " -s NO_EXIT_RUNTIME=1"
+    )
+
+    message("Adding addtional build flags to emscripten:")
+    message(${ADDITIONAL_EMS_BUILD_FLAGS})
+
+    message("Emscripten cmake: ${GAME_EMSCRIPTEN_TOOLCHAIN}")
+
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/build.emscripten)
+    set(CMAKE_TOOLCHAIN_FILE           ${GAME_EMSCRIPTEN_TOOLCHAIN})
+
+    set_target_properties(
+        ${GAME_NAME} PROPERTIES LINK_FLAGS
+        "${ADDITIONAL_EMS_BUILD_FLAGS}"
+    )
+# endif()
 
 ##----------------------------------------------------------------------------##
 ## Link Libraries                                                             ##
 ##----------------------------------------------------------------------------##
-target_link_libraries(cosmic-intruders LINK_PUBLIC Cooper)
+target_link_libraries(${GAME_NAME} LINK_PUBLIC Cooper)
