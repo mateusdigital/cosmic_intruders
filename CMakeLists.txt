@@ -16,47 +16,52 @@
 ##                                                                            ##
 ##---------------------------------------------------------------------------~##
 
+##----------------------------------------------------------------------------##
+## Cmake   Definitions                                                        ##
+##----------------------------------------------------------------------------##
 cmake_minimum_required(VERSION 3.5)
-project(cosmic-intruders)
+cmake_policy(SET CMP0015 NEW)
+set(CMAKE_VERBOSE_MAKEFILE on)
+
+
+##----------------------------------------------------------------------------##
+## Project Definitions                                                        ##
+##----------------------------------------------------------------------------##
+set(PROJECT_NAME "cosmic-intruders")
+project(${PROJECT_NAME})
+
 
 ##----------------------------------------------------------------------------##
 ## Compiler Definitions                                                       ##
 ##----------------------------------------------------------------------------##
 set(CMAKE_CXX_STANDARD          14)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
-if (MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14")
-endif()
 
-if(NOT CMAKE_BUILD_TYPE)
+if(NOT CMAKE_BUILD_TYPE) ## Default to debug if nothing is given....
     message("[Setting build type to Debug]")
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 
-IF(${CMAKE_BUILD_TYPE} MATCHES "Debug")
+IF(${CMAKE_BUILD_TYPE} MATCHES "Debug") ## Set additional defines for DEBUG
     message("[Setting debug additional defines]")
     add_definitions(-DCOOPER_DEBUG)
 ENDIF()
 
-message("[Build type is configure to: ${CMAKE_BUILD_TYPE}]")
+## Game Version.
+add_definitions(-DCOW_COSMIC_INTRUDERS_VERSION=${GAME_VERSION}) 
 
-add_definitions( -DCOW_COSMIC_INTRUDERS_VERSION=${GAME_VERSION} )
+
+message("[Build type is configure to: ${CMAKE_BUILD_TYPE}]")
+message("[Building version: ${GAME_VERSION}]")
 
 
 ##----------------------------------------------------------------------------##
 ## Include Directories                                                        ##
 ##----------------------------------------------------------------------------##
-## Cooper.
 include_directories(
     ${CMAKE_SOURCE_DIR}/lib/Cooper
-)
-
-##------------------------------------------------------------------------------
-## Game.
-include_directories(
     ${CMAKE_SOURCE_DIR}/game
 )
-
 
 ##----------------------------------------------------------------------------##
 ## Source Files                                                               ##
@@ -101,10 +106,10 @@ set(SOURCE_FILES
 ##----------------------------------------------------------------------------##
 ## Executable Definitions                                                     ##
 ##----------------------------------------------------------------------------##
-add_executable(cosmic-intruders ${SOURCE_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 
 ##----------------------------------------------------------------------------##
 ## Link Libraries                                                             ##
 ##----------------------------------------------------------------------------##
-target_link_libraries(cosmic-intruders LINK_PUBLIC Cooper)
+target_link_libraries(${PROJECT_NAME} LINK_PUBLIC Cooper)
