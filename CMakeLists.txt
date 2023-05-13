@@ -39,6 +39,9 @@ IF(${CMAKE_BUILD_TYPE} MATCHES "Debug")
 ENDIF()
 
 message("[Build type is configure to: ${CMAKE_BUILD_TYPE}]")
+add_definitions(-DGAME_NAME=${GAME_NAME})
+add_definitions(-DGAME_VERSION=${GAME_VERSION})
+add_definitions(-DGAME_TARGET_PLATFORM=${TARGET_PLATFORM})
 
 
 ##----------------------------------------------------------------------------##

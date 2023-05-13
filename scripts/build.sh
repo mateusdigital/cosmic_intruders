@@ -1,25 +1,35 @@
 #!/usr/bin/env bash
 
+readonly SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)";
+readonly ROOT_DIR="$(dirname "$SCRIPT_DIR")";
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)";
-ROOT_DIR="$(dirname "$SCRIPT_DIR")";
+readonly BUILD_DIR="${ROOT_DIR}/build";
+readonly DIST_DIR="${ROOT_DIR}/dist";
 
-BUILD_DIR="${ROOT_DIR}/build";
-DIST_DIR="${ROOT_DIR}/dist";
+readonly LIBS_ROOT_DIR="${ROOT_DIR}/lib/Cooper";
+readonly GAME_ROOT_DIR="${ROOT_DIR}/game";
+readonly ASSETS_DIR="${ROOT_DIR}/assets";
 
-LIBS_ROOT_DIR="${ROOT_DIR}/lib/Cooper";
-GAME_ROOT_DIR="${ROOT_DIR}/game";
-ASSETS_DIR="${ROOT_DIR}/assets";
+readonly GAME_NAME="cosmic-intruders";
+readonly GAME_VERSION=$(cat "${ROOT_DIR}/game/version" | tr -d "\""); ## without any quotes...
+readonly GAME_EMSCRIPTEN_TOOLCHAIN="${ROOT_DIR}/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake";
 
-PACKAGE_BUILD="";
-
-GAME_NAME="cosmic-intruders";
-GAME_VERSION=$(cat "${ROOT_DIR}/game/version" | tr -d "\""); ## without any quotes...
 GAME_BUILD_TYPE="Release";
 GAME_BUILD_TARGET="pc";
-GAME_EMSCRIPTEN_TOOLCHAIN="${HOME}/.emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake";
-
+PACKAGE_BUILD="";
 PLATFORM_NAME=$(uname)
+
+export CMAKE_TOOLCHAIN_FILE="${GAME_EMSCRIPTEN_TOOLCHAIN}";
+
+function show_help() { 
+    echo "--release ) GAME_BUILD_TYPE=Release";
+    echo "--debug   ) GAME_BUILD_TYPE=Debug";  
+    echo "--pc      ) GAME_BUILD_TARGET=pc";   
+    echo "--web     ) GAME_BUILD_TARGET=web";  
+    echo "--package ) PACKAGE_BUILD=true";     
+    exit 1;
+
+}
 
 while true; do
     case "$1" in
@@ -60,7 +70,7 @@ function build_game()
             --config "${BUILD_TYPE}"                                   \
         ;
 }
-export CMAKE_TOOLCHAIN_FILE="$HOME/.emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake";
+
 
 test "${GAME_BUILD_TARGET}" == "pc"   && build_game "pc";
 test "${GAME_BUILD_TARGET}" == "web"  && build_game "web";

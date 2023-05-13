@@ -2,3 +2,4 @@ build
 releases
 score.txt
 dist/
+emsdk/
