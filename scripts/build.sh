@@ -3,15 +3,12 @@
 readonly SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)";
 readonly ROOT_DIR="$(dirname "$SCRIPT_DIR")";
 
-readonly BUILD_DIR="${ROOT_DIR}/build";
-readonly DIST_DIR="${ROOT_DIR}/dist";
-
 readonly LIBS_ROOT_DIR="${ROOT_DIR}/lib/Cooper";
 readonly GAME_ROOT_DIR="${ROOT_DIR}/game";
 readonly ASSETS_DIR="${ROOT_DIR}/assets";
 
 readonly GAME_NAME="cosmic-intruders";
-readonly GAME_VERSION=$(cat "${ROOT_DIR}/game/version" | tr -d "\""); ## without any quotes...
+readonly GAME_VERSION="2.1.0";
 readonly GAME_EMSCRIPTEN_TOOLCHAIN="${ROOT_DIR}/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake";
 
 GAME_BUILD_TYPE="Release";
@@ -46,30 +43,74 @@ while true; do
     fi;
 done;
 
+readonly BUILD_DIR="${ROOT_DIR}/build-${GAME_BUILD_TARGET}-${GAME_BUILD_TYPE}";
+readonly DIST_DIR="${ROOT_DIR}/dist-${GAME_BUILD_TARGET}-${GAME_BUILD_TYPE}";
+
 
 ##
 ## Build the game.
 ##
+
+function build_game2()
+{
+    local target_platform="$1";
+    echo "Building game for platform: ${target_platform}";
+
+    mkdir -p "${BUILD_DIR}";
+
+    g++                                                                         \
+        $(find ${ROOT_DIR} -type d -name "emsdk" -prune -o -iname "*.cpp" -print) \
+        $(sdl2-config --cflags)                                                   \
+        -std=c++14                                                                \
+                                                                                  \
+        -I"${LIBS_ROOT_DIR}"                                                      \
+        -I"${LIBS_ROOT_DIR}/Cooper"                                               \
+        -I"${GAME_ROOT_DIR}"                                                      \
+                                                                                  \
+        -o "${BUILD_DIR}/game"                                                    \
+                                                                                  \
+        -lSDL2                                                                    \
+        -lSDL2_mixer                                                              \
+        -lSDL2_ttf                                                                \
+        -lSDL2_image                                                              \
+                                                                                  \
+        -DGAME_VERSION="\"${GAME_VERSION}\""                                      \
+    ;
+}
+
 
 function build_game()
 {
     local target_platform="$1";
     echo "Building game for platform: ${target_platform}";
 
-    mkdir -p "${BUILD_DIR}"                                            \
-        && cd "${BUILD_DIR}"                                           \
-        && cmake                                                       \
-            -DGAME_NAME="${GAME_NAME}"                                 \
-            -DGAME_VERSION="\"${GAME_VERSION}\""                       \
-            -DGAME_TARGET_PLATFORM="${target_platform}"                \
-            -DCMAKE_BUILD_TYPE="${GAME_BUILD_TYPE}"                    \
-            -DGAME_EMSCRIPTEN_TOOLCHAIN="${GAME_EMSCRIPTEN_TOOLCHAIN}" \
-            ..                                                         \
-        && cmake                                                       \
-            --build .                                                  \
-            --config "${BUILD_TYPE}"                                   \
-        ;
+    mkdir -p "${BUILD_DIR}";
+    # find ${ROOT_DIR} -type d -name "emsdk" -prune -o -iname "*.cpp" -print
+
+    em++                                                                          \
+        $(find ${ROOT_DIR} -type d -name "emsdk" -prune -o -iname "*.cpp" -print) \
+        -std=c++14                                                                \
+                                                                                  \
+        -I"${LIBS_ROOT_DIR}"                                                      \
+        -I"${LIBS_ROOT_DIR}/Cooper"                                               \
+        -I"${GAME_ROOT_DIR}"                                                      \
+                                                                                  \
+        -o "${BUILD_DIR}/game.html"                                               \
+                                                                                  \
+        -s USE_SDL=2                                                              \
+        -s USE_SDL_MIXER=2                                                        \
+        -s USE_SDL_TTF=2                                                          \
+        -s USE_SDL_IMAGE=2                                                        \
+        -s SDL2_IMAGE_FORMATS='["png"]'                                           \
+                                                                                  \
+         -lidbfs.js                                                               \
+                                                                                  \
+        --preload-file assets                                                     \
+                                                                                  \
+        -DGAME_VERSION="\"123\""                                                  \
+    ;
 }
+
 
 
 test "${GAME_BUILD_TARGET}" == "pc"   && build_game "pc";
