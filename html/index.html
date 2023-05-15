@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en-us">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Cosmic Intruders - mateus.digital</title>
+
+  <script src="https://kit.fontawesome.com/4da06b246b.js" crossorigin="anonymous"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap');
+
+    @font-face {
+      font-family: 'MachineStd-Bold';
+      src: url('fonts/MachineStd-Bold.otf') format('opentype');
+    }
+
+
+
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      /* outline: solid magenta 1px; */
+    }
+
+
+    body {
+      margin: 0;
+      padding: none;
+      height: 100vh;
+      background-color: black;
+      color: white;
+
+      font-family: 'JetBrains Mono', monospace;
+
+      background-image: 
+        radial-gradient(hsl(0, 0%, 3%) 1px, transparent 2px), 
+        radial-gradient(hsl(0, 0%, 3%) 1px, #000000 2px);
+
+      background-size: 80px 80px;
+      background-position: 0 0, 40px 40px;
+    }
+
+    @keyframes animateBackground {
+  0% {
+    background-image: 
+      radial-gradient(hsl(0, 0%, 5%) 1px, transparent 2px), 
+      radial-gradient(hsl(0, 0%, 5%) 1px, #000000 2px);
+  }
+  50% {
+    background-image: 
+      radial-gradient(hsl(0, 0%, 3%) 2px, transparent 2px), 
+      radial-gradient(hsl(0, 0%, 3%) 2px, #000000 2px);
+  }
+  100% {
+    background-image: 
+      radial-gradient(hsl(0, 0%, 5%) 1px, transparent 2px), 
+      radial-gradient(hsl(0, 0%, 5%) 1px, #000000 2px);
+  }
+}
+
+body {
+  animation: animateBackground 30s infinite ease-in-out;
+}
+
+
+
+    img {
+      position: absolute;
+      z-index: +100;
+      height: 100vh;
+      border-radius: 2rem;
+      box-shadow:
+        10px 7px 0px 0px #f1d83a,
+        20px 14px 0px 0px #f92912,
+        30px 21px 0px 0px #1641c4,
+        40px 29px 0px 0px #05030a;
+    }
+
+    canvas {
+      position: relative;
+      top: 14.5vh;
+      left: 0vh;
+      z-index: -100;
+      height: 66vh;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+
+      padding-top: 1rem;
+
+    }
+
+    .content {
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+      /* background-color: red; */
+      max-width: 700px;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    h1 {
+      margin: 2rem 0 0rem;
+
+      font-family: 'MachineStd-Bold', monospace;
+      font-size: 6rem;
+      -webkit-text-stroke: 1px black;
+      text-stroke: 2px #89180b;
+      color: #ffffff;
+
+      color: #f1d83a;
+      text-shadow:
+        0px 7px 0px #f92912,
+        0px 14px 0px #1641c4,
+        0px 21px 0px #05030a;
+    }
+
+    p {
+      padding: 0.5rem 0;
+    }
+
+
+    .text-container {
+      margin: 1.5rem 0 2rem;
+    }
+
+    .button-container {
+      margin: 2rem 0;
+      display: grid;
+
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      padding: 0 1.5rem;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 8px 16px;
+
+      margin: 0 0.5;
+
+      /* border-radius: 0.75rem; */
+      box-shadow: 0px 6px 0px 0px #f92912;
+
+      border: 1px solid #fae645;
+      background-color: #fae645;
+
+      cursor: pointer;
+      color: black;
+
+      font-weight: bold;
+      font-size: 1.2rem;
+      text-decoration: none;
+    }
+
+    .button:hover {
+      color: white;
+
+      background-color: #f92912;
+      border: 1px solid #f92912;
+      box-shadow: 0px 6px 0px 0px #89180b;
+    }
+
+    .button:active {
+      position: relative;
+      top: 4px;
+      box-shadow: 0px 2px 0px 0px #500e06;
+    }
+
+    .mateus-url {
+      padding-bottom: 1rem;
+    }
+
+    .mateus-url a {
+      font-weight: bold;
+      color: white;
+      text-decoration: 0;
+      border-bottom: white dotted 2px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <img src="img/border.png">
+    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+  </div>
+
+  <div class="content center">
+    <h1 class="title">
+      COSMIC INTRUDERS
+    </h1>
+
+    <div class="text-container">
+      <p>
+        This Space Invaders clone was made as a test for Miniclip Web Client Developer vacancy by the end of 2017.
+      </p>
+      <p>
+        Play online using the arrow keys to move and the space key to shoot.
+      </p>
+    </div>
+
+    <div class="button-container">
+      <div class="button">
+        <i class="fa-brands fa-linux"></i> <a herf="">Download GNU / Linux</a>
+      </div>
+
+      <div class="button">
+        <i class="fa-brands fa-windows"></i> <a herf="">Download Windows</a>
+      </div>
+
+      <div class="button">
+        <i class="fa-brands fa-apple"></i> <a herf="">Downlaod macOS</a>
+      </div>
+
+      <div class="button">
+        <i class="fa-brands fa-github"></i> Source Code
+      </div>
+    </div>
+
+    <div class="mateus-url">
+      <i class="fa-solid fa-globe"></i> <a href="https://mateus.digital">https://mateus.digital</a>
+    </div>
+  </div>
+
+
+  <script type='text/javascript'>
+    var Module = {
+      canvas: (() => {
+        var canvas = document.getElementById('canvas');
+        return canvas;
+      })(),
+    };
+  </script>
+
+  <script async type="text/javascript" src="game.js"></script>
+</body>
+
+</html>
