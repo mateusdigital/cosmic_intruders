@@ -9,14 +9,13 @@ readonly ASSETS_DIR="${ROOT_DIR}/assets";
 
 readonly GAME_NAME="cosmic-intruders";
 readonly GAME_VERSION="2.1.0";
-readonly GAME_EMSCRIPTEN_TOOLCHAIN="${ROOT_DIR}/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake";
 
 GAME_BUILD_TYPE="Release";
 GAME_BUILD_TARGET="pc";
 PACKAGE_BUILD="";
 PLATFORM_NAME=$(uname)
 
-export CMAKE_TOOLCHAIN_FILE="${GAME_EMSCRIPTEN_TOOLCHAIN}";
+source "${ROOT_DIR}/emsdk/emsdk_env.sh";
 
 function show_help() { 
     echo "--release ) GAME_BUILD_TYPE=Release";
