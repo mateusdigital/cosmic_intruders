@@ -1,4 +1,29 @@
 #!/usr/bin/env bash
+##~---------------------------------------------------------------------------##
+##                               *       +                                    ##
+##                         '                  |                               ##
+##                     ()    .-.,="``"=.    - o -                             ##
+##                           '=/_       \     |                               ##
+##                        *   |  '=._    |                                    ##
+##                             \     `=./`,        '                          ##
+##                          .   '=.__.=' `='      *                           ##
+##                 +                         +                                ##
+##                      O      *        '       .                             ##
+##                                                                            ##
+##  File      : build-game.sh                                                 ##
+##  Project   : cosmic_intruders                                              ##
+##  Date      : 2017-11-17                                                    ##
+##  License   : GPLv3                                                         ##
+##  Author    : mateus.digital <hello@mateus.digital>                         ##
+##  Copyright : mateus.digital - 2017 - 2023                                  ##
+##                                                                            ##
+##  Description :                                                             ##
+##    This script builds the game boy version of El Jamon Volador.            ##
+##    As 29/05/23 it only can be built in macOS hosts, since the              ##
+##    new version of the compiler on GNU doesn't produce a valid binary.      ##
+##                                                                            ##
+##---------------------------------------------------------------------------~##
+
 
 readonly SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)";
 readonly ROOT_DIR="$(dirname "$SCRIPT_DIR")";
@@ -15,14 +40,13 @@ GAME_BUILD_TARGET="pc";
 PACKAGE_BUILD="";
 PLATFORM_NAME=$(uname)
 
-source "${ROOT_DIR}/emsdk/emsdk_env.sh";
 
-function show_help() { 
+function show_help() {
     echo "--release ) GAME_BUILD_TYPE=Release";
-    echo "--debug   ) GAME_BUILD_TYPE=Debug";  
-    echo "--pc      ) GAME_BUILD_TARGET=pc";   
-    echo "--web     ) GAME_BUILD_TARGET=web";  
-    echo "--package ) PACKAGE_BUILD=true";     
+    echo "--debug   ) GAME_BUILD_TYPE=Debug";
+    echo "--pc      ) GAME_BUILD_TARGET=pc";
+    echo "--web     ) GAME_BUILD_TARGET=web";
+    echo "--package ) PACKAGE_BUILD=true";
     exit 1;
 
 }
@@ -50,14 +74,14 @@ readonly DIST_DIR="${ROOT_DIR}/dist-${GAME_BUILD_TARGET}-${GAME_BUILD_TYPE}";
 ## Build the game.
 ##
 
-function build_game2()
+function build_for_pc()
 {
-    local target_platform="$1";
-    echo "Building game for platform: ${target_platform}";
+    echo "Building game for pc";
 
     mkdir -p "${BUILD_DIR}";
 
-    g++                                                                         \
+    ## @todo(mateus): Add debug option...
+    g++                                                                           \
         $(find ${ROOT_DIR} -type d -name "emsdk" -prune -o -iname "*.cpp" -print) \
         $(sdl2-config --cflags)                                                   \
         -std=c++14                                                                \
@@ -78,14 +102,16 @@ function build_game2()
 }
 
 
-function build_game()
+function build_for_web()
 {
+    source "${ROOT_DIR}/emsdk/emsdk_env.sh";
+
     local target_platform="$1";
-    echo "Building game for platform: ${target_platform}";
+    echo "Building game for web";
 
     mkdir -p "${BUILD_DIR}";
-    # find ${ROOT_DIR} -type d -name "emsdk" -prune -o -iname "*.cpp" -print
 
+    ## @todo(mateus): Add debug option...
     em++                                                                          \
         $(find ${ROOT_DIR} -type d -name "emsdk" -prune -o -iname "*.cpp" -print) \
         -std=c++14                                                                \
@@ -112,8 +138,8 @@ function build_game()
 
 
 
-test "${GAME_BUILD_TARGET}" == "pc"   && build_game "pc";
-test "${GAME_BUILD_TARGET}" == "web"  && build_game "web";
+test "${GAME_BUILD_TARGET}" == "pc"   && build_for_pc;
+test "${GAME_BUILD_TARGET}" == "web"  && build_for_web;
 
 
 ##
