@@ -10,7 +10,7 @@
 ##                 +                         +                                ##
 ##                      O      *        '       .                             ##
 ##                                                                            ##
-##  File      : install-dependencies.sh                                       ##
+##  File      : build-static.sh                                               ##
 ##  Project   : cosmic_intruders                                              ##
 ##  Date      : 2023-05-13                                                    ##
 ##  License   : GPLv3                                                         ##
@@ -18,49 +18,28 @@
 ##  Copyright : mateus.digital - 2023                                         ##
 ##                                                                            ##
 ##  Description :                                                             ##
-##     Assumes: git, g++                                                      ##
-##     Downloads: emscripten and SDL2 libs.                                   ##
+##    Builds the website for the project.                                     ##
+##    Requires ./scripts/build-game --web to be ran first.                    ##
 ##---------------------------------------------------------------------------~##
 
 set -e ## break on errors...
 
-
-sudo apt-get update   -y &&   \
-     apt-get install  -y      \
-        libsdl2-2.0-0         \
-        libsdl2-doc           \
-        libsdl2-gfx-dev       \
-        libsdl2-image-2.0-0   \
-        libsdl2-mixer-2.0-0   \
-        libsdl2-net-2.0-0     \
-        libsdl2-ttf-2.0-0     \
-        libsdl2-dev           \
-        libsdl2-gfx-1.0-0     \
-        libsdl2-gfx-doc       \
-        libsdl2-image-dev     \
-        libsdl2-mixer-dev     \
-        libsdl2-net-dev       \
-        libsdl2-ttf-dev       \
-    ;
-
-
-##
-## Emscripten
-##
-
+##------------------------------------------------------------------------------
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)";
 readonly ROOT_DIR="$(dirname "$SCRIPT_DIR")";
+readonly OUTPUT_DIRECTORY="out";
 
-pushd "${ROOT_DIR}";
-    rm -rf emsdk;
-    git clone https://github.com/emscripten-core/emsdk.git;
 
-    pushd emsdk
-        git pull;
+##------------------------------------------------------------------------------
+rm -rf "${ROOT_DIR}/${OUTPUT_DIRECTORY}";
+mkdir -p "${ROOT_DIR}/${OUTPUT_DIRECTORY}";
 
-        ./emsdk install  latest;
-        ./emsdk activate latest;
+cp -R "${ROOT_DIR}"/html/* "${ROOT_DIR}"/${OUTPUT_DIRECTORY};
 
-        source "${ROOT_DIR}/emsdk/emsdk_env.sh";
-    popd # emsdk
-popd # "${ROOT_DIR}";
+cp "${ROOT_DIR}"/build-web-Release/game.data \
+   "${ROOT_DIR}"/build-web-Release/game.js   \
+   "${ROOT_DIR}"/build-web-Release/game.wasm \
+   "${ROOT_DIR}"/${OUTPUT_DIRECTORY};
+
+##------------------------------------------------------------------------------
+echo "$0 done...";

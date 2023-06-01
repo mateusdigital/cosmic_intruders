@@ -18,13 +18,25 @@
 ##  Copyright : mateus.digital - 2017 - 2023                                  ##
 ##                                                                            ##
 ##  Description :                                                             ##
-##    This script builds the game boy version of El Jamon Volador.            ##
-##    As 29/05/23 it only can be built in macOS hosts, since the              ##
-##    new version of the compiler on GNU doesn't produce a valid binary.      ##
-##                                                                            ##
+##    This script builds the pc and web version of Cosmic Intruders.          ##
+##    Look for ./install-dependencies.sh to check what's required to          ##
+##    run the build.                                                          ##
 ##---------------------------------------------------------------------------~##
 
+set -e ## break on errors...
 
+##------------------------------------------------------------------------------
+function show_help() {
+    echo "--release ) GAME_BUILD_TYPE=Release";
+    echo "--debug   ) GAME_BUILD_TYPE=Debug";
+    echo "--pc      ) GAME_BUILD_TARGET=pc";
+    echo "--web     ) GAME_BUILD_TARGET=web";
+    echo "--package ) PACKAGE_BUILD=true";
+    exit 1;
+
+}
+
+##------------------------------------------------------------------------------
 readonly SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)";
 readonly ROOT_DIR="$(dirname "$SCRIPT_DIR")";
 
@@ -35,21 +47,11 @@ readonly ASSETS_DIR="${ROOT_DIR}/assets";
 readonly GAME_NAME="cosmic-intruders";
 readonly GAME_VERSION="2.1.0";
 
+##------------------------------------------------------------------------------
 GAME_BUILD_TYPE="Release";
 GAME_BUILD_TARGET="pc";
 PACKAGE_BUILD="";
 PLATFORM_NAME=$(uname)
-
-
-function show_help() {
-    echo "--release ) GAME_BUILD_TYPE=Release";
-    echo "--debug   ) GAME_BUILD_TYPE=Debug";
-    echo "--pc      ) GAME_BUILD_TARGET=pc";
-    echo "--web     ) GAME_BUILD_TARGET=web";
-    echo "--package ) PACKAGE_BUILD=true";
-    exit 1;
-
-}
 
 while true; do
     case "$1" in
@@ -132,30 +134,10 @@ function build_for_web()
                                                                                   \
         --preload-file assets                                                     \
                                                                                   \
-        -DGAME_VERSION="\"123\""                                                  \
+        -DGAME_VERSION="\"${GAME_VERSION}\""                                      \
     ;
 }
 
 
-
-test "${GAME_BUILD_TARGET}" == "pc"   && build_for_pc;
-test "${GAME_BUILD_TARGET}" == "web"  && build_for_web;
-
-
-##
-## Package if needed...
-##
-
-if [ -n "$PACKAGE_BUILD" ]; then
-    GAME_DIST_DIR="${DIST_DIR}/cosmic-intruders-${GAME_VERSION}-${PLATFORM_NAME}-${BUILD_TYPE}";
-    GAME_ZIP_FILENAME="${DIST_DIR}/cosmic-intruders-${GAME_VERSION}-${PLATFORM_NAME}.zip";
-
-    mkdir -p "${GAME_DIST_DIR}"                          \
-        && cd  "${GAME_DIST_DIR}"                        \
-        && cp     "${ROOT_DIR}/build/cosmic-intruders" . \
-        && cp  -R "${ROOT_DIR}/assets"                 . \
-        && zip -r "${GAME_ZIP_FILENAME}"               . \
-    ;
-
-    echo "Generated zip at: $GAME_ZIP_FILENAME";
-fi;
+test "${GAME_BUILD_TARGET}" == "pc"  && build_for_pc;
+test "${GAME_BUILD_TARGET}" == "web" && build_for_web;
