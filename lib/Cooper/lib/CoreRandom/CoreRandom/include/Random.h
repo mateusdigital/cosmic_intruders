@@ -20,8 +20,15 @@
 
 //std
 #include <random>
+#include <cstdlib>
+#include <ctime>
+#include <limits>
+#include <sstream>
+#include <stdexcept>
 //CoreRandom
 #include "CoreRandom_Utils.h"
+
+
 
 NS_CORERANDOM_BEGIN
 
@@ -31,13 +38,6 @@ class Random
     // Enums / Constants / Typedefs                                           //
     //------------------------------------------------------------------------//
 public:
-    //--------------------------------------------------------------------------
-    /// @brief
-    ///   A meta value to indicate to Random()
-    ///   that it should use a random seed.
-    /// @see Random(), getSeed(), isUsingRandomSeed().
-    static const int kRandomSeed;
-
     ///-------------------------------------------------------------------------
     /// @brief Typedef to reduce verbosity.
     typedef std::mt19937 NumberGeneratorType;
@@ -59,7 +59,12 @@ public:
     ///   be initialized. If seed is kRandomSeed it will be
     ///   selected from the system std::time(nullptr).
     /// @see kRandomSeed, reseed(), getSeed(), isUsingRandomSeed().
-    Random(int seed = kRandomSeed);
+    Random(int seed = -1)
+        : m_randomDist(0, 1)
+    {
+        reseed(seed);
+    }
+
 
 
     //------------------------------------------------------------------------//
@@ -74,7 +79,10 @@ public:
     /// @note
     ///   next return is INCLUSIVE.
     /// @see next(int max), next(int min, int max);
-    int next();
+    int next() {
+        resetRange(0, std::numeric_limits<int>::max());
+        return m_dist(m_rnd);
+    }
 
     ///-------------------------------------------------------------------------
     /// @brief
@@ -90,7 +98,10 @@ public:
     /// @note
     ///   next return is INCLUSIVE.
     /// @see next(), next(int min, int max);
-    int next(int max);
+    int next(int max) {
+        resetRange(0, max);
+        return m_dist(m_rnd);
+    }
 
     ///-------------------------------------------------------------------------
     /// @brief
@@ -108,7 +119,10 @@ public:
     /// @note
     ///   next return is INCLUSIVE.
     /// @see next(), next(int max);
-    int next(int min, int max);
+    int next(int min, int max) {
+        resetRange(min, max);
+        return m_dist(m_rnd);
+    }
 
     ///-------------------------------------------------------------------------
     /// @brief
@@ -116,7 +130,9 @@ public:
     /// @returns
     ///   A bool value.
     /// @see next(), next(int max), next(int min, int max);
-    bool nextBool();
+    bool nextBool() {
+        return static_cast<bool>(m_randomDist(m_rnd));
+    }
 
 
     //------------------------------------------------------------------------//
@@ -129,7 +145,7 @@ public:
     /// @returns
     ///   A reference for the internal number generator.
     /// @see NumberGeneratorType.
-    NumberGeneratorType& getNumberGenerator();
+    NumberGeneratorType& getNumberGenerator() { return m_rnd; }
 
     ///-------------------------------------------------------------------------
     /// @brief
@@ -137,7 +153,7 @@ public:
     /// @returns
     ///   A constant reference for the internal number generator.
     /// @see NumberGeneratorType.
-    const NumberGeneratorType& getNumberGenerator() const;
+    const NumberGeneratorType& getNumberGenerator() const { return m_rnd; }
 
     ///-------------------------------------------------------------------------
     /// @brief
@@ -145,7 +161,7 @@ public:
     /// @returns
     ///   A reference for the internal integer distribution.
     /// @see IntegerDistributionType.
-    IntegerDistributionType& getIntDistribution();
+    IntegerDistributionType& getIntDistribution() { return m_dist; }
 
     ///-------------------------------------------------------------------------
     /// @brief
@@ -153,7 +169,7 @@ public:
     /// @returns
     ///   A constant reference for the internal integer distribution.
     /// @see IntegerDistributionType.
-    const IntegerDistributionType& getIntDistribution() const;
+    const IntegerDistributionType& getIntDistribution() const { return m_dist; }
 
 
     ///-------------------------------------------------------------------------
@@ -164,7 +180,14 @@ public:
     ///   be initialized. If seed is kRandomSeed it will be
     ///   selected from the system std::time(nullptr).
     /// @see getSeed(), isUsingRandomSeed().
-    void reseed(int seed = kRandomSeed);
+    void reseed(int seed = -1) {
+        m_seed = (seed == -1)
+            ? std::time(nullptr)
+            : seed;
+
+        m_isUsingRandomSeed = (seed == -1);
+        m_rnd.seed(m_seed);
+    }
 
     ///-------------------------------------------------------------------------
     /// @brief
@@ -173,21 +196,32 @@ public:
     ///   The actual seed used in this object - If Random was created
     ///   using kRandomSeed it will the chosen seed, otherwise will
     ///   return the argument used in the CTOR.
-    int getSeed() const;
+    int getSeed() const { return m_seed; }
 
     ///-------------------------------------------------------------------------
     /// @brief
     ///   Checks if CTOR was initialized with kRandomSeed.
     /// @returns
     ///   True if kRandomSeed was used, False otherwise.
-    bool isUsingRandomSeed() const;
+    bool isUsingRandomSeed() const {
+        return m_isUsingRandomSeed;
+    }
 
 
     //------------------------------------------------------------------------//
     // Private Methods                                                        //
     //------------------------------------------------------------------------//
 private:
-    inline void resetRange(int min, int max);
+    void resetRange(int min, int max) {
+        if(max > min) {
+            const auto temp = min;
+            max = min;
+            min = temp;
+        }
+
+        if(m_dist.min() != min || m_dist.max() != max)
+            m_dist.param(std::uniform_int_distribution<int>::param_type(min, max));
+    }
 
 
     //------------------------------------------------------------------------//

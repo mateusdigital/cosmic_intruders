@@ -76,6 +76,7 @@ readonly DIST_DIR="${ROOT_DIR}/dist-${GAME_BUILD_TARGET}-${GAME_BUILD_TYPE}";
 ## Build the game.
 ##
 
+##------------------------------------------------------------------------------
 function build_for_pc()
 {
     echo "Building game for pc";
@@ -103,7 +104,7 @@ function build_for_pc()
     ;
 }
 
-
+##------------------------------------------------------------------------------
 function build_for_web()
 {
     source "${ROOT_DIR}/emsdk/emsdk_env.sh";
@@ -117,6 +118,7 @@ function build_for_web()
     em++                                                                          \
         $(find ${ROOT_DIR} -type d -name "emsdk" -prune -o -iname "*.cpp" -print) \
         -std=c++14                                                                \
+        -Oz                                                                       \
                                                                                   \
         -I"${LIBS_ROOT_DIR}"                                                      \
         -I"${LIBS_ROOT_DIR}/Cooper"                                               \
@@ -124,11 +126,27 @@ function build_for_web()
                                                                                   \
         -o "${BUILD_DIR}/game.html"                                               \
                                                                                   \
+        -DEMSCRIPTEN_HAS_UNBOUND_TYPE_NAMES=0                                     \
+                                                                                  \
+        -s ENVIRONMENT='web'                                                      \
+        -s INLINING_LIMIT=1                                                       \
+                                                                                  \
+        -s ASSERTIONS=0                                                           \
+        -s STACK_OVERFLOW_CHECK=0                                                 \
+        -s SAFE_HEAP=0                                                            \
+        -s LZ4=1                                                                  \
+        -s DISABLE_EXCEPTION_CATCHING=1                                           \
+        -s AGGRESSIVE_VARIABLE_ELIMINATION=1                                      \
+                                                                                  \
         -s USE_SDL=2                                                              \
         -s USE_SDL_MIXER=2                                                        \
         -s USE_SDL_TTF=2                                                          \
         -s USE_SDL_IMAGE=2                                                        \
         -s SDL2_IMAGE_FORMATS='["png"]'                                           \
+                                                                                  \
+                                                                                  \
+        -fno-exceptions                                                           \
+        -fno-rtti                                                                 \
                                                                                   \
          -lidbfs.js                                                               \
                                                                                   \
@@ -138,6 +156,6 @@ function build_for_web()
     ;
 }
 
-
+##------------------------------------------------------------------------------
 test "${GAME_BUILD_TARGET}" == "pc"  && build_for_pc;
 test "${GAME_BUILD_TARGET}" == "web" && build_for_web;

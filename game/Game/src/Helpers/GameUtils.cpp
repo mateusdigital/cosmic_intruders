@@ -46,10 +46,7 @@ const char* GameUtils::kWindowCaption  = "Cosmic Intruders - " GAME_VERSION;
 void GameUtils::Init()
 {
     m_pGraphicsRef = Cooper::Graphics::Instance();
-
-    m_pCoreRandom  = Cooper::make_unique<CoreRandom::Random>(
-        CoreRandom::Random::kRandomSeed
-    );
+    m_pCoreRandom  = Cooper::make_unique<CoreRandom::Random>();
 }
 
 
