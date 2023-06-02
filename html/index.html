@@ -6,8 +6,6 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>Cosmic Intruders - mateus.digital</title>
 
-  <script src="https://kit.fontawesome.com/4da06b246b.js" crossorigin="anonymous"></script>
-
   <style>
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap');
 
@@ -15,9 +13,6 @@
       font-family: 'MachineStd-Bold';
       src: url('fonts/MachineStd-Bold.otf') format('opentype');
     }
-
-
-
 
     *,
     *::before,
@@ -29,16 +24,16 @@
 
 
     body {
-      margin: 0;
-      padding: none;
       height: 100vh;
+
       background-color: black;
       color: white;
 
       font-family: 'JetBrains Mono', monospace;
 
-      background-image: 
-        radial-gradient(hsl(0, 0%, 3%) 1px, transparent 2px), 
+      /* Small dots... */
+      background-image:
+        radial-gradient(hsl(0, 0%, 3%) 1px, transparent 2px),
         radial-gradient(hsl(0, 0%, 3%) 1px, #000000 2px);
 
       background-size: 80px 80px;
@@ -46,28 +41,28 @@
     }
 
     @keyframes animateBackground {
-  0% {
-    background-image: 
-      radial-gradient(hsl(0, 0%, 5%) 1px, transparent 2px), 
-      radial-gradient(hsl(0, 0%, 5%) 1px, #000000 2px);
-  }
-  50% {
-    background-image: 
-      radial-gradient(hsl(0, 0%, 3%) 2px, transparent 2px), 
-      radial-gradient(hsl(0, 0%, 3%) 2px, #000000 2px);
-  }
-  100% {
-    background-image: 
-      radial-gradient(hsl(0, 0%, 5%) 1px, transparent 2px), 
-      radial-gradient(hsl(0, 0%, 5%) 1px, #000000 2px);
-  }
-}
+      0% {
+        background-image:
+          radial-gradient(hsl(0, 0%, 5%) 1px, transparent 2px),
+          radial-gradient(hsl(0, 0%, 5%) 1px, #000000 2px);
+      }
 
-body {
-  animation: animateBackground 30s infinite ease-in-out;
-}
+      50% {
+        background-image:
+          radial-gradient(hsl(0, 0%, 3%) 2px, transparent 2px),
+          radial-gradient(hsl(0, 0%, 3%) 2px, #000000 2px);
+      }
 
+      100% {
+        background-image:
+          radial-gradient(hsl(0, 0%, 5%) 1px, transparent 2px),
+          radial-gradient(hsl(0, 0%, 5%) 1px, #000000 2px);
+      }
+    }
 
+    body {
+      animation: animateBackground 30s infinite ease-in-out;
+    }
 
     img {
       position: absolute;
@@ -93,10 +88,9 @@ body {
       display: flex;
       flex-direction: column;
       align-items: center;
+
       height: 100vh;
-
       padding-top: 1rem;
-
     }
 
     .content {
@@ -237,12 +231,38 @@ body {
 
 
   <script type='text/javascript'>
+    var totalDependencies = 0;
+    var loadedDependencies = 0;
+
     var Module = {
       canvas: (() => {
         var canvas = document.getElementById('canvas');
         return canvas;
       })(),
+
+      monitorRunDependencies: function (left) {
+        totalDependencies = left;
+        loadedDependencies = totalDependencies - left;
+
+        var progress = Math.floor((loadedDependencies / totalDependencies) * 100);
+        var status = 'Loading... ' + progress + '%';
+
+        // Update the loading status
+        console.log(status);
+
+        if (left === 0) {
+          // All dependencies have been loaded
+          console.log('Initialization complete.');
+          // Perform additional actions after loading is complete
+        }
+      },
+
+
     };
+
+
+
+
   </script>
 
   <script async type="text/javascript" src="game.js"></script>
