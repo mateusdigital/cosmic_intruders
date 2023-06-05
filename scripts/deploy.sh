@@ -42,12 +42,14 @@ readonly REMOTE_FOLDER="/var/www/mateus.digital/cosmic_intruders";
 
 ## Delete
 if [ "$1" == "-d" ]; then
-      rsync -avz                                       \
-            -e ssh "${REMOTE_SERVER}:${REMOTE_FOLDER}" \
-            --delete "${SOURCE_FOLDER}/"               \
+      rsync -avzu                                       \
+            "${SOURCE_FOLDER}/"                         \
+            -e ssh "${REMOTE_SERVER}:${REMOTE_FOLDER}/" \
+            --delete "${SOURCE_FOLDER}/"                \
       ;
 else
-      rsync -avz                                        \
-            -e ssh "${REMOTE_SERVER}:${REMOTE_FOLDER}/" \
+      rsync -avzu                                      \
+            "${SOURCE_FOLDER}/"                        \
+            -e ssh "${REMOTE_SERVER}:${REMOTE_FOLDER}" \
       ;
 fi;
