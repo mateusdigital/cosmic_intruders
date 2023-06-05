@@ -21,6 +21,8 @@
 ##  Description :                                                             ##
 ##   Deploys the output of scripts/build-static.sh to the remote server.      ##
 ##   Current user should have remote ssh keys installed on the server.        ##
+##   Accepts:                                                                 ##
+##     -d flag to reset the remote server.                                    ##
 ##---------------------------------------------------------------------------~##
 
 set -e; ## break on errors
@@ -38,7 +40,14 @@ readonly SOURCE_FOLDER="${ROOT_DIR}/out";
 readonly REMOTE_SERVER="mateus@mateus.digital";
 readonly REMOTE_FOLDER="/var/www/mateus.digital/cosmic_intruders";
 
-      # --delete "${SOURCE_FOLDER}/"               \
-rsync -avz                                       \
-      -e ssh "${REMOTE_SERVER}:${REMOTE_FOLDER}" \
-    ;
+## Delete
+if [ "$1" == "-d" ] then
+      rsync -avz                                       \
+            -e ssh "${REMOTE_SERVER}:${REMOTE_FOLDER}" \
+      ;
+else
+      rsync -avz                                       \
+            -e ssh "${REMOTE_SERVER}:${REMOTE_FOLDER}" \
+            --delete "${SOURCE_FOLDER}/"               \
+      ;
+fi;

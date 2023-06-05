@@ -59,6 +59,9 @@ cp "${ROOT_DIR}"/build-web-Release/game.data \
    "${ROOT_DIR}"/${OUTPUT_DIRECTORY};
 
 
+## Distribution files.
+mkdir -p "${ROOT_DIR}"/${OUTPUT_DIRECTORY}/data;
+cp "${ROOT_DIR}/dist/"*.zip "${ROOT_DIR}"/${OUTPUT_DIRECTORY}/data;
 
 ##------------------------------------------------------------------------------
 echo "${NEXT_BUILD}" > "${ROOT_DIR}/.buildno"; ## update build no.
