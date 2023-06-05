@@ -16,6 +16,8 @@
 //                                                                            //
 //---------------------------------------------------------------------------~//
 
+#ifndef EMSCRIPTEN
+
 /*
  * Simple-SDL2-Audio
  *
@@ -162,3 +164,6 @@ void unpauseAudio(void);
 #endif
 
 #endif
+
+
+#endif // EMSCRIPTEN

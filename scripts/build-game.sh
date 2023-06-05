@@ -139,7 +139,6 @@ function build_for_web()
         -s AGGRESSIVE_VARIABLE_ELIMINATION=1                                      \
                                                                                   \
         -s USE_SDL=2                                                              \
-        -s USE_SDL_MIXER=2                                                        \
         -s USE_SDL_TTF=2                                                          \
         -s USE_SDL_IMAGE=2                                                        \
         -s SDL2_IMAGE_FORMATS='["png"]'                                           \
@@ -150,10 +149,12 @@ function build_for_web()
                                                                                   \
          -lidbfs.js                                                               \
                                                                                   \
-        --preload-file assets                                                     \
+        --preload-file assets-web/@assets                                         \
                                                                                   \
         -DGAME_VERSION="\"${GAME_VERSION}\""                                      \
     ;
+
+    ls -lh "${BUILD_DIR}";
 }
 
 ##------------------------------------------------------------------------------

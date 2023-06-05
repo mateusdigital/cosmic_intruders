@@ -17,6 +17,7 @@
 //---------------------------------------------------------------------------~//
 
 #ifndef EMSCRIPTEN
+
 // Header
 #include "src/Sound/private/AudioValues.h"
 
@@ -37,4 +38,4 @@ Private::AudioValues Private::GetPlatformAudioValues()
     };
 }
 
-#endif //#ifndef EMSCRIPTEN
+#endif // EMSCRIPTEN

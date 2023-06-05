@@ -1,0 +1,20 @@
+Textures/Game.png
+Cannon_Alive             493    40   47   30
+Cannon_Exploding1        422   104   54   30
+Cannon_Exploding2        486   104   54   30
+CannonLaser_Alive          0     0    2   15
+CannonLaser_Explode      283   110   15   20
+AlienLaser_Alive           0     0    2   15
+AlienLaser_Horizontal      5     0   12    2
+AlienLaser_Explode       283   110   15   20
+AlienLaserPowered_Alive    6     6    6   24
+AlienMage_Frame1           0    35   44   30
+AlienMage_Frame2          59    35   44   30
+AlienShooter_Frame1      125    35   44   30
+AlienShooter_Frame2      185    35   44   30
+AlienBlocker_Frame1      259    36   44   30
+AlienBlocker_Frame2      317    36   44   30
+Alien_Explosion          555   107   58   30
+UFO_Alive                381    32   66   30
+UFO_Explosion            546   107   66   30
+Shield                   562    13   80   58

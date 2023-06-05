@@ -16,6 +16,8 @@
 //                                                                            //
 //---------------------------------------------------------------------------~//
 
+#ifndef EMSCRIPTEN
+
 /*
  * Simple-SDL2-Audio
  *
@@ -463,3 +465,5 @@ static void addAudio(Audio * root, Audio * _new)
 
     root->next = _new;
 }
+
+#endif // EMSCRIPTEN

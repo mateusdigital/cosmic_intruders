@@ -16,6 +16,8 @@
 //                                                                            //
 //---------------------------------------------------------------------------~//
 
+#ifndef EMSCRIPTEN
+
 #pragma once
 
 // SDL
@@ -42,3 +44,5 @@ AudioValues GetPlatformAudioValues();
 
 } //namespace Cooper
 } //namespace Private
+
+#endif // EMSCRIPTEN

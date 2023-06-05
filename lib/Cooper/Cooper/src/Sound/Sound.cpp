@@ -18,6 +18,53 @@
 
 // Header
 #include "include/Sound/Sound.h"
+
+
+#ifdef EMSCRIPTEN
+
+// Usings
+using namespace Cooper;
+
+//----------------------------------------------------------------------------//
+// Lifecycle Functions                                                        //
+//----------------------------------------------------------------------------//
+void Sound::Init()
+{
+}
+
+void Sound::Shutdown()
+{
+}
+
+
+bool Sound::Initialized()
+{
+    return true;
+}
+
+
+//----------------------------------------------------------------------------//
+// Sound Functions                                                            //
+//----------------------------------------------------------------------------//
+void Sound::PreloadSound(const std::vector<std::string> &soundNames)
+{
+}
+
+void Sound::FreeSound(const std::string &path)
+{
+}
+
+bool Sound::IsLoaded(const std::string &path)
+{
+}
+
+
+void Sound::PlaySound(const std::string &path)
+{
+}
+
+#else
+
 // std
 #include <map>
 // Cooper
@@ -158,3 +205,5 @@ void Sound::PlaySound(const std::string &path)
     // Now we're sure that sound is loaded.
     playSoundFromMemory(m_audioMap[path].get(), SDL_MIX_MAXVOLUME / 2);
 }
+
+#endif // EMSCRIPTEN
