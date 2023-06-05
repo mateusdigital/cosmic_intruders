@@ -45,7 +45,11 @@ readonly GAME_ROOT_DIR="${ROOT_DIR}/game";
 readonly ASSETS_DIR="${ROOT_DIR}/assets";
 
 readonly GAME_NAME="cosmic-intruders";
-readonly GAME_VERSION="2.1.0";
+readonly GAME_VERSION="$(git describe --abbrev=0 --tags)";
+
+readonly CURR_BUILD="$(cat "${ROOT_DIR}/.buildno")";
+readonly NEXT_BUILD="$(( CURR_BUILD + 1 ))";
+
 
 ##------------------------------------------------------------------------------
 GAME_BUILD_TYPE="Release";
@@ -93,7 +97,7 @@ function build_for_pc()
         -I"${LIBS_ROOT_DIR}/Cooper"                                               \
         -I"${GAME_ROOT_DIR}"                                                      \
                                                                                   \
-        -o "${BUILD_DIR}/game"                                                    \
+        -o "${BUILD_DIR}/${GAME_NAME}"                                            \
                                                                                   \
         -lSDL2                                                                    \
         -lSDL2_mixer                                                              \
@@ -160,3 +164,6 @@ function build_for_web()
 ##------------------------------------------------------------------------------
 test "${GAME_BUILD_TARGET}" == "pc"  && build_for_pc;
 test "${GAME_BUILD_TARGET}" == "web" && build_for_web;
+
+##------------------------------------------------------------------------------
+echo "${NEXT_BUILD}" > "${ROOT_DIR}/.buildno"; ## update build no.
