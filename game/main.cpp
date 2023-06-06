@@ -23,11 +23,12 @@
 #include "Game/include/Helpers/SceneHelper.h"
 #include "Game/include/Helpers/Storage.h"
 
+#include <SDL.h>
 
 //----------------------------------------------------------------------------//
 // Entry Point                                                                //
 //----------------------------------------------------------------------------//
-int main(int argc, char *argv[])
+int main(int argv, char** args)
 {
     //
     // Window and Design Sizes.
