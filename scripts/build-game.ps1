@@ -65,4 +65,4 @@ Copy-Item (Get-ChildItem -Path ./lib/SDL2_image-2.6.3-mingw/i686-w64-mingw32/   
 Copy-Item (Get-ChildItem -Path ./lib/SDL2_mixer-2.6.3-mingw/i686-w64-mingw32/   -Filter *.dll -Recurse -ErrorAction SilentlyContinue -Force) ./build-pc-Release
 Copy-Item (Get-ChildItem -Path ./lib/SDL2_ttf-2.20.2-mingw/i686-w64-mingw32/    -Filter *.dll -Recurse -ErrorAction SilentlyContinue -Force) ./build-pc-Release
 Copy-Item ./lib/libgcc_s_dw2-1.dll ./build-pc-Release
-Move-Item ./lib/libstdc++-6.dll    ./build-pc-Release
+Copy-Item ./lib/libstdc++-6.dll    ./build-pc-Release
