@@ -12,8 +12,9 @@ Cosmic Intruders is Space Invaders clone was made as a test for
 Miniclip Web Client Developer vacancy by the end of 2017.
 
 You can [play it online](https://mateus.digital/cosmic_intruders) or download
-it for [GNU/Linux](https://mateus.digital/cosmic_intruders)
-or [macOS](https://mateus.digital/cosmic_intruders).
+it for [GNU/Linux](https://mateus.digital/cosmic_intruders),
+[macOS](https://mateus.digital/cosmic_intruders) or
+[Windows](https://mateus.digital/cosmic_intruders).
 
 <br>
 
@@ -38,8 +39,8 @@ cd cosmic_intruders
 ## Dependencies:
 
 - [SDL2](https://www.libsdl.org/)
-- [Emscripten](https://emscripten.org/)
-
+- [Emscripten](https://emscripten.org/) - Web version.
+- [MinGW](https://sourceforge.net/projects/mingw/) - Windows Builds.
 
 ## Thanks to:
 
