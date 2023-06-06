@@ -32,11 +32,12 @@ if [ ! -z "$WINDOWS_REPO_ROOT" ]; then
     readonly PLATFORM_NAME="windows";
 else
     readonly ROOT_DIR="$(dirname "$SCRIPT_DIR")";
-    readonly PLATFORM_NAME="gnu_linux";
-fi;
 
-if [ -n "$(uname -a | grep -i "Darwin")" ]; then
-    PLATFORM_NAME="macOS";
+	if [ -n "$(uname -a | grep -i "Darwin")" ]; then
+	    readonly PLATFORM_NAME="macOS";
+	else 	
+	    readonly PLATFORM_NAME="gnu_linux";
+	fi;
 fi;
 
 readonly PROJECT_NAME="cosmic-intruders";
