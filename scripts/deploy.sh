@@ -38,7 +38,7 @@ readonly ROOT_DIR="$(dirname "$SCRIPT_DIR")";
 
 readonly SOURCE_FOLDER="${ROOT_DIR}/out";
 readonly REMOTE_SERVER="mateus@mateus.digital";
-readonly REMOTE_FOLDER="/var/www/mateus.digital/cosmic_intruders";
+readonly REMOTE_FOLDER="/var/www/mateus.digital/html/cosmic_intruders";
 
 ## Delete
 if [ "$1" == "-d" ]; then

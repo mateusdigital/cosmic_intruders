@@ -31,26 +31,28 @@ readonly is_linux="$(uname -a | grep -i Linux)";
 readonly is_mac="$(uname -a | grep -i Darwin)";
 
 if [ -n "$is_linux" ]; then
-    sudo apt-get update   -y &&   \
-        apt-get install  -y      \
-            libsdl2-2.0-0         \
-            libsdl2-doc           \
-            libsdl2-gfx-dev       \
-            libsdl2-image-2.0-0   \
-            libsdl2-mixer-2.0-0   \
-            libsdl2-net-2.0-0     \
-            libsdl2-ttf-2.0-0     \
-            libsdl2-dev           \
-            libsdl2-gfx-1.0-0     \
-            libsdl2-gfx-doc       \
-            libsdl2-image-dev     \
-            libsdl2-mixer-dev     \
-            libsdl2-net-dev       \
-            libsdl2-ttf-dev       \
-            zip                   \
-        ;
+    echo "==> Installing for linux";
+    sudo apt-get update  -y;
+    sudo apt-get install -y   \
+        libsdl2-2.0-0         \
+        libsdl2-doc           \
+        libsdl2-gfx-dev       \
+        libsdl2-image-2.0-0   \
+        libsdl2-mixer-2.0-0   \
+        libsdl2-net-2.0-0     \
+        libsdl2-ttf-2.0-0     \
+        libsdl2-dev           \
+        libsdl2-gfx-1.0-0     \
+        libsdl2-gfx-doc       \
+        libsdl2-image-dev     \
+        libsdl2-mixer-dev     \
+        libsdl2-net-dev       \
+        libsdl2-ttf-dev       \
+        zip                   \
+    ;
 
 elif [ -n "$is_mac" ]; then
+    echo "==> Installing for mac";
     brew install   \
         SDL2       \
         SDL2_image \
@@ -69,6 +71,7 @@ readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)";
 readonly ROOT_DIR="$(dirname "$SCRIPT_DIR")";
 
 pushd "${ROOT_DIR}";
+    echo "==> Clonning EMSDK";
     rm -rf emsdk;
     git clone https://github.com/emscripten-core/emsdk.git;
 
