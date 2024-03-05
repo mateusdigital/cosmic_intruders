@@ -24,8 +24,10 @@
 
 $env:Path+=";C:/MinGW/bin";
 
-Remove-Item "./build-pc-Release" -Recurse        -Force;
-New-Item    "./build-pc-Release" -Type Directory -Force;
+if (Test-Path "./build-pc-Release") {
+    Remove-Item "./build-pc-Release" -Recurse -Force;
+}
+New-Item "./build-pc-Release" -Type Directory -Force;
 
 g++.exe                                                                                 `
     (Get-ChildItem -Path . -Filter *.cpp -Recurse -ErrorAction SilentlyContinue -Force) `
