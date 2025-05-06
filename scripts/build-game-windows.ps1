@@ -14,23 +14,35 @@
 ##  Date      : 2023-06-06                                                    ##
 ##  License   : GPLv3                                                         ##
 ##  Author    : mateus.digital <hello@mateus.digital>                         ##
-##  Copyright : mateus.digital - 2023                                         ##
+##  Copyright : mateus.digital - 2023, 2025                                   ##
 ##                                                                            ##
 ##  Description :                                                             ##
 ##    This builds the game using mingw -                                      ##
 ##       It tries to replicate the most of ./scripts/build-game.sh            ##
 ##    Requires that mingw to be located at: C:/MinGW                          ##
 ##---------------------------------------------------------------------------~##
+if(-not $env:MINGW_BIN) {
+    $_MINGW_BIN = "./thirdparty/MinGW/bin";
+    Write-Host "MINGW_BIN not set, using default: $_MINGW_BIN";
+} else {
+    $_MINGW_BIN = $env:MINGW_BIN;
+    Write-Host "MINGW_BIN set to: $_MINGW_BIN";
+}
 
-$env:Path+=";C:/MinGW/bin";
+$env:Path = "${_MINGW_BIN};${env:Path}";
+
 
 if (Test-Path "./build-pc-Release") {
     Remove-Item "./build-pc-Release" -Recurse -Force;
 }
 New-Item "./build-pc-Release" -Type Directory -Force;
 
-g++.exe                                                                                 `
-    (Get-ChildItem -Path . -Filter *.cpp -Recurse -ErrorAction SilentlyContinue -Force) `
+$ALL_SOURCES = Get-ChildItem  `
+    -Filter *.cpp -Recurse -ErrorAction SilentlyContinue -Force `
+    -Path "./game", "./lib"
+
+g++.exe --verbose                                                             `
+    $ALL_SOURCES `
     -std=c++14                                                                `
                                                                               `
     -I./lib/SDL2-devel-2.26.5-mingw/i686-w64-mingw32/include/SDL2             `
