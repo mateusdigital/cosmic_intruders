@@ -21,6 +21,14 @@
 ##       It tries to replicate the most of ./scripts/build-game.sh            ##
 ##    Requires that mingw to be located at: C:/MinGW                          ##
 ##---------------------------------------------------------------------------~##
+
+$ErrorActionPreference = "Stop"
+
+## -----------------------------------------------------------------------------
+$OUTPUT_DIR_PATH = "./build/windows-release";
+$BUMP_VERSION    = "./thirdparty/bump-version-win.exe";
+
+## -----------------------------------------------------------------------------
 if(-not $env:MINGW_BIN) {
     $_MINGW_BIN = "./thirdparty/MinGW/bin";
     Write-Host "MINGW_BIN not set, using default: $_MINGW_BIN";
@@ -31,18 +39,29 @@ if(-not $env:MINGW_BIN) {
 
 $env:Path = "${_MINGW_BIN};${env:Path}";
 
+## -----------------------------------------------------------------------------
+& $BUMP_VERSION --build;
+$GAME_VERSION = (& $BUMP_VERSION --show-version-full);
 
-if (Test-Path "./build-pc-Release") {
-    Remove-Item "./build-pc-Release" -Recurse -Force;
+Write-Host "==> Building for Windows";
+Write-Host "GAME VERSION: ${GAME_VERSION}";
+
+
+## -----------------------------------------------------------------------------
+if (Test-Path "$OUTPUT_DIR_PATH") {
+    Remove-Item "$OUTPUT_DIR_PATH" -Recurse -Force;
 }
-New-Item "./build-pc-Release" -Type Directory -Force;
+New-Item "$OUTPUT_DIR_PATH" -Type Directory -Force;
 
+## -----------------------------------------------------------------------------
 $ALL_SOURCES = Get-ChildItem  `
     -Filter *.cpp -Recurse -ErrorAction SilentlyContinue -Force `
     -Path "./game", "./lib"
 
+
 g++.exe --verbose                                                             `
-    $ALL_SOURCES `
+    $ALL_SOURCES                                                              `
+    -O3 -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wfloat-equal          `
     -std=c++14                                                                `
                                                                               `
     -I./lib/SDL2-devel-2.26.5-mingw/i686-w64-mingw32/include/SDL2             `
@@ -74,11 +93,11 @@ g++.exe --verbose                                                             `
     ;
 
 ##------------------------------------------------------------------------------
-Copy-Item (Get-ChildItem -Path ./lib/SDL2-devel-2.26.5-mingw/i686-w64-mingw32/  -Filter *.dll -Recurse -ErrorAction SilentlyContinue -Force) ./build-pc-Release
-Copy-Item (Get-ChildItem -Path ./lib/SDL2_image-2.6.3-mingw/i686-w64-mingw32/   -Filter *.dll -Recurse -ErrorAction SilentlyContinue -Force) ./build-pc-Release
-Copy-Item (Get-ChildItem -Path ./lib/SDL2_mixer-2.6.3-mingw/i686-w64-mingw32/   -Filter *.dll -Recurse -ErrorAction SilentlyContinue -Force) ./build-pc-Release
-Copy-Item (Get-ChildItem -Path ./lib/SDL2_ttf-2.20.2-mingw/i686-w64-mingw32/    -Filter *.dll -Recurse -ErrorAction SilentlyContinue -Force) ./build-pc-Release
-Copy-Item ./lib/libgcc_s_dw2-1.dll ./build-pc-Release
-Copy-Item ./lib/libstdc++-6.dll    ./build-pc-Release
+Copy-Item (Get-ChildItem -Path ./lib/SDL2-devel-2.26.5-mingw/i686-w64-mingw32/  -Filter *.dll -Recurse -ErrorAction SilentlyContinue -Force) $OUTPUT_DIR_PATH
+Copy-Item (Get-ChildItem -Path ./lib/SDL2_image-2.6.3-mingw/i686-w64-mingw32/   -Filter *.dll -Recurse -ErrorAction SilentlyContinue -Force) $OUTPUT_DIR_PATH
+Copy-Item (Get-ChildItem -Path ./lib/SDL2_mixer-2.6.3-mingw/i686-w64-mingw32/   -Filter *.dll -Recurse -ErrorAction SilentlyContinue -Force) $OUTPUT_DIR_PATH
+Copy-Item (Get-ChildItem -Path ./lib/SDL2_ttf-2.20.2-mingw/i686-w64-mingw32/    -Filter *.dll -Recurse -ErrorAction SilentlyContinue -Force) $OUTPUT_DIR_PATH
+Copy-Item ./lib/libgcc_s_dw2-1.dll $OUTPUT_DIR_PATH
+Copy-Item ./lib/libstdc++-6.dll    $OUTPUT_DIR_PATH
 
-Move-Item ./cosmic-intruders.exe ./build-pc-Release
+Move-Item ./cosmic-intruders.exe   $OUTPUT_DIR_PATH

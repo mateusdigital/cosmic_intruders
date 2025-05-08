@@ -29,39 +29,40 @@ set -e ## break on errors...
 function show_help() {
     echo "--release ) GAME_BUILD_TYPE=Release";
     echo "--debug   ) GAME_BUILD_TYPE=Debug";
-    echo "--pc      ) GAME_BUILD_TARGET=pc";
+    echo "--macos   ) GAME_BUILD_TARGET=macos";
+    echo "--linux   ) GAME_BUILD_TARGET=linux";
     echo "--web     ) GAME_BUILD_TARGET=web";
     echo "--package ) PACKAGE_BUILD=true";
     exit 1;
-
 }
 
+## -----------------------------------------------------------------------------
+readonly is_linux="$(uname -a | grep -i Linux)";
+readonly is_mac="$(uname -a | grep -i Darwin)";
+if [ -n "$is_linux" ] ; then
+    readonly PLATFORM_NAME="linux";
+elif [ -n "$is_mac" ] ; then
+    readonly PLATFORM_NAME="macos";
+else
+    echo "Unknown platform: ${PLATFORM_NAME}";
+    exit 1;
+fi;
+
+## -----------------------------------------------------------------------------
+readonly BUMP_VERSION="./thirdparty/bump-version-${PLATFORM_NAME}";
+
+
 ##------------------------------------------------------------------------------
-readonly SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)";
-readonly ROOT_DIR="$(dirname "$SCRIPT_DIR")";
-
-readonly LIBS_ROOT_DIR="${ROOT_DIR}/lib/Cooper";
-readonly GAME_ROOT_DIR="${ROOT_DIR}/game";
-readonly ASSETS_DIR="${ROOT_DIR}/assets";
-
-readonly GAME_NAME="cosmic-intruders";
-readonly GAME_VERSION="$(git describe --abbrev=0 --tags)";
-
-readonly CURR_BUILD="$(cat "${ROOT_DIR}/.buildno")";
-readonly NEXT_BUILD="$(( CURR_BUILD + 1 ))";
-
-
-##------------------------------------------------------------------------------
-GAME_BUILD_TYPE="Release";
-GAME_BUILD_TARGET="pc";
+GAME_BUILD_TYPE="";
+GAME_BUILD_TARGET="";
 PACKAGE_BUILD="";
-PLATFORM_NAME=$(uname)
 
 while true; do
     case "$1" in
-        "--release" ) GAME_BUILD_TYPE="Release"; ;;
-        "--debug"   ) GAME_BUILD_TYPE="Debug";   ;;
-        "--pc"      ) GAME_BUILD_TARGET="pc";    ;;
+        "--release" ) GAME_BUILD_TYPE="release"; ;;
+        "--debug"   ) GAME_BUILD_TYPE="debug";   ;;
+        "--linux"   ) GAME_BUILD_TARGET="linux"; ;;
+        "--macos"   ) GAME_BUILD_TARGET="macos"; ;;
         "--web"     ) GAME_BUILD_TARGET="web";   ;;
         "--package" ) PACKAGE_BUILD="true";      ;;
         *) show_help;                            ;;
@@ -72,8 +73,28 @@ while true; do
     fi;
 done;
 
-readonly BUILD_DIR="${ROOT_DIR}/build-${GAME_BUILD_TARGET}-${GAME_BUILD_TYPE}";
-readonly DIST_DIR="${ROOT_DIR}/dist-${GAME_BUILD_TARGET}-${GAME_BUILD_TYPE}";
+if [ $GAME_BUILD_TARGET != "" ]; then
+    if [ $GAME_BUILD_TARGET != $PLATFORM_NAME ] && [ "$GAME_BUILD_TARGET" != "web" ]; then
+        echo "==> Can't build $GAME_BUILD_TARGET on $PLATFORM_NAME";
+        exit 1;
+    fi;
+fi;
+
+echo "==> Building for ${GAME_BUILD_TARGET} in (${PLATFORM_NAME})";
+$BUMP_VERSION --build;
+
+##------------------------------------------------------------------------------
+readonly SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)";
+readonly ROOT_DIR="$(dirname "$SCRIPT_DIR")";
+
+readonly LIBS_ROOT_DIR="${ROOT_DIR}/lib/Cooper";
+readonly GAME_ROOT_DIR="${ROOT_DIR}/game";
+readonly ASSETS_DIR="${ROOT_DIR}/assets";
+
+readonly GAME_NAME="cosmic-intruders";
+readonly GAME_VERSION=$($BUMP_VERSION --show-version-full);
+
+readonly BUILD_DIR="${ROOT_DIR}/build/${GAME_BUILD_TARGET}-${GAME_BUILD_TYPE}";
 
 
 ##
@@ -83,12 +104,12 @@ readonly DIST_DIR="${ROOT_DIR}/dist-${GAME_BUILD_TARGET}-${GAME_BUILD_TYPE}";
 ##------------------------------------------------------------------------------
 function build_for_pc()
 {
-    echo "Building game for pc";
-
+    echo "Building game for pc ${GAME_BUILD_TARGET}-${GAME_BUILD_TYPE}"
+    echo "GAME VERSION: ${GAME_VERSION}";
     mkdir -p "${BUILD_DIR}";
 
     ## @todo(mateus): Add debug option...
-    g++                                                                           \
+    g++ --verbose                                                                 \
         $(find ${ROOT_DIR} -type d -name "emsdk" -prune -o -iname "*.cpp" -print) \
         $(sdl2-config --cflags)                                                   \
         -std=c++14                                                                \
@@ -114,8 +135,9 @@ function build_for_web()
     source "${ROOT_DIR}/emsdk/emsdk_env.sh";
 
     local target_platform="$1";
-    echo "Building game for web";
 
+    echo "Building game for web ${GAME_BUILD_TARGET}-${GAME_BUILD_TYPE}";
+    echo "GAME VERSION: ${GAME_VERSION}";
     mkdir -p "${BUILD_DIR}";
 
     ## @todo(mateus): Add debug option...
@@ -162,8 +184,9 @@ function build_for_web()
 }
 
 ##------------------------------------------------------------------------------
-test "${GAME_BUILD_TARGET}" == "pc"  && build_for_pc;
-test "${GAME_BUILD_TARGET}" == "web" && build_for_web;
-
-##------------------------------------------------------------------------------
-echo "${NEXT_BUILD}" > "${ROOT_DIR}/.buildno"; ## update build no.
+echo "-=============== ${GAME_BUILD_TARGET}";
+if [ "${GAME_BUILD_TARGET}" == "web" ]; then
+    build_for_web;
+else
+    build_for_pc
+fi;

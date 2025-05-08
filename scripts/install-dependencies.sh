@@ -34,6 +34,7 @@ if [ -n "$is_linux" ]; then
     echo "==> Installing for linux";
     sudo apt-get update  -y;
     sudo apt-get install -y   \
+        g++                   \
         libsdl2-2.0-0         \
         libsdl2-doc           \
         libsdl2-gfx-dev       \
@@ -63,6 +64,7 @@ elif [ -n "$is_mac" ]; then
 fi;
 
 
+exit
 ##
 ## Emscripten
 ##

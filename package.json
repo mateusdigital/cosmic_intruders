@@ -1,0 +1,35 @@
+{
+ "name": "cosmic-intruders",
+ "description": "Cosmic Intruders is a retro-style arcade shooter built with love by mateus.digital. ",
+ "version": "2.1.0",
+ "build": 29,
+ "scripts": {
+  "build-web": "bash ./scripts/build-game.sh --release --web",
+  "build-mac": "bash ./scripts/build-game.sh --release --mac",
+  "build-linux": "bash ./scripts/build-game.sh --release --linux",
+  "build-windows": "pwsh -ExecutionPolicy Bypass -File ./scripts/build-game-windows.ps1"
+ },
+ "repository": {
+  "type": "git",
+  "url": "https://github.com/mateusdigital/cosmic_intruders.git"
+ },
+ "bugs": {
+  "url": "https://github.com/mateusdigital/cosmic_intruders/issues"
+ },
+ "homepage": "https://mateus.digital/projects/cosmic_intruders",
+ "keywords": [
+  "game",
+  "arcade",
+  "shooter",
+  "retro",
+  "c++",
+  "sdl2",
+  "mateus.digital"
+ ],
+ "author": {
+  "name": "Mateus Mesquita",
+  "email": "hello@mateus.digital",
+  "url": "https://mateus.digital"
+ },
+ "license": "GPL-3.0-or-later"
+}
