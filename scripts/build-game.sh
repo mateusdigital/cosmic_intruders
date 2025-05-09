@@ -141,7 +141,7 @@ function build_for_web()
     mkdir -p "${BUILD_DIR}";
 
     ## @todo(mateus): Add debug option...
-    em++                                                                          \
+    em++ --verbose                                                                \
         $(find ${ROOT_DIR} -type d -name "emsdk" -prune -o -iname "*.cpp" -print) \
         -std=c++14                                                                \
         -Oz                                                                       \
