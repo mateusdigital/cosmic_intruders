@@ -24,26 +24,29 @@ $ErrorActionPreference = "Stop"
 Write-Output "==> Building Web Page...";
 
 ## -----------------------------------------------------------------------------
-$GAME_VERSION     = (./thirdparty/bump-version-win.exe --show-version-full);
-$OUTPUT_DIRECTORY = "./out/";
+$GAME_VERSION = (./thirdparty/bump-version-win.exe --show-version);
+$GAME_BUILD   = (./thirdparty/bump-version-win.exe --build);
+
+$OUTPUT_DIRECTORY = "./out";
 
 ##------------------------------------------------------------------------------
-Remove-Item -Recurse -Force "${OUTPUT_DIRECTORY}";
+Remove-Item -Recurse -Force "${OUTPUT_DIRECTORY}" -ErrorAction SilentlyContinue;
 New-Item -Type Directory "${OUTPUT_DIRECTORY}" -Force;
 
 ## Our index
 Copy-Item -Recurse "./html/*" "${OUTPUT_DIRECTORY}";
+(Get-Content "./out/index.html") `
+    -replace "__GAME_VERSION__", "${GAME_VERSION}" `
+    -replace "__GAME_BUILD__", "${GAME_BUILD}" `
+| Set-Content "input.html"
 
 ## Emscripten Files
-Copy-Item                           `
-    "./build-web-release/game.data" `
-    "./build-web-release/game.js"   `
-    "./build-web-release/game.wasm" `
-    ${OUTPUT_DIRECTORY};
-
+Copy-Item  "./build/web-release/game.data" ${OUTPUT_DIRECTORY};
+Copy-Item  "./build/web-release/game.js"   ${OUTPUT_DIRECTORY};
+Copy-Item  "./build/web-release/game.wasm" ${OUTPUT_DIRECTORY};
 
 ## Distribution files.
 New-Item -Type Directory "${OUTPUT_DIRECTORY}/data";
-Copy-Item "dist/"*.zip "${OUTPUT_DIRECTORY}/data";
+Copy-Item "dist/*.zip"   "${OUTPUT_DIRECTORY}/data";
 
 Write-Output "==> done...";
