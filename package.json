@@ -2,12 +2,14 @@
  "name": "cosmic-intruders",
  "description": "Cosmic Intruders is a retro-style arcade shooter built with love by mateus.digital. ",
  "version": "2.1.0",
- "build": 29,
+ "build": 34,
  "scripts": {
   "build-web": "bash ./scripts/build-game.sh --release --web",
   "build-mac": "bash ./scripts/build-game.sh --release --mac",
   "build-linux": "bash ./scripts/build-game.sh --release --linux",
-  "build-windows": "pwsh -ExecutionPolicy Bypass -File ./scripts/build-game-windows.ps1"
+  "build-windows": "pwsh -ExecutionPolicy Bypass -File ./scripts/build-game-windows.ps1",
+  "build-project-web-page": "pwsh -ExecutionPolicy Bypass -File ./scripts/build-project-web-page.ps1",
+  "package": "pwsh -ExecutionPolicy Bypass -File ./scripts/generate-release-zip.ps1"
  },
  "repository": {
   "type": "git",
