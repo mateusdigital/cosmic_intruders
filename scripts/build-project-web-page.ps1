@@ -38,7 +38,7 @@ Copy-Item -Recurse "./html/*" "${OUTPUT_DIRECTORY}";
 (Get-Content "./out/index.html") `
     -replace "__GAME_VERSION__", "${GAME_VERSION}" `
     -replace "__GAME_BUILD__", "${GAME_BUILD}" `
-| Set-Content "input.html"
+| Set-Content "./out/index.html"
 
 ## Emscripten Files
 Copy-Item  "./build/web-release/game.data" ${OUTPUT_DIRECTORY};
